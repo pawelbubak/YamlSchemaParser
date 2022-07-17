@@ -37,11 +37,26 @@ public class Test {
                 description: Example docker-compose configuration schema
                 
                 definitions:
+                  job-target:
+                    type: object
+                    properties:
+                      targets:
+                        type: array
+                        itemsType:
+                          type: string
+                  job_id:
+                    type: integer
+                    exclusiveMin: 0
                   job_name:
                     type: string
                     minLength: 5
                     maxLength: 20
                     pattern: "[a-zA-Z]*"
+                  job_start:
+                    type: date
+                    minDate: 2022-17-20
+                  one_time_job:
+                    type: boolean
                 """;
     }
 

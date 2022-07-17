@@ -5,6 +5,7 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.annotation.SchemaVersion;
 import org.yaml.schema.parser.api.schema.property.SchemaProperty;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.internal.utils.SchemaPropertyNameDesignator;
 
 public abstract class AbstractSchemaProperty implements SchemaProperty {
     /**
@@ -36,21 +37,7 @@ public abstract class AbstractSchemaProperty implements SchemaProperty {
     }
 
     private String designateOwnName(SpecVersion specVersion) throws SchemaPropertyNotExistsInSpecificationException {
-        for (SchemaVersion schemaVersion : getClass().getAnnotationsByType(SchemaVersion.class)) {
-            if (specVersion.equals(schemaVersion.value())) {
-                if (schemaVersion.name().isBlank()) {
-                    return getDefaultPropertyName();
-                } else {
-                    return schemaVersion.name();
-                }
-            }
-        }
-        throw new SchemaPropertyNotExistsInSpecificationException(getDefaultPropertyName(), specVersion);
-    }
-
-    private String getDefaultPropertyName() {
-        SchemaPropertyName schemaPropertyName = getClass().getAnnotation(SchemaPropertyName.class);
-        return schemaPropertyName.value();
+        return SchemaPropertyNameDesignator.designatePropertyName(getClass(), specVersion);
     }
 
 }

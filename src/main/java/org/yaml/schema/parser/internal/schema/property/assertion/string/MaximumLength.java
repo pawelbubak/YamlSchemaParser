@@ -8,20 +8,20 @@ import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.STRING)
-@SchemaPropertyName("minLength")
+@SchemaPropertyName("maxLength")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class MinLength extends AbstractStringLengthAssertion {
+public class MaximumLength extends AbstractStringLengthAssertion {
 
-    public MinLength(Integer value) throws SchemaPropertyNotExistsInSpecificationException {
+    public MaximumLength(Integer value) throws SchemaPropertyNotExistsInSpecificationException {
         this(SpecVersion.current(), value);
     }
 
-    public MinLength(SpecVersion specVersion, Integer value) throws SchemaPropertyNotExistsInSpecificationException {
+    public MaximumLength(SpecVersion specVersion, Integer value) throws SchemaPropertyNotExistsInSpecificationException {
         super(specVersion, value);
     }
 
     public static SchemaPropertyMapper<Integer> mapper() {
-        return (specVersion, value, propertyFactory) -> new MinLength(specVersion, value);
+        return (specVersion, value, propertyFactory) -> new MaximumLength(specVersion, value);
     }
 
 }

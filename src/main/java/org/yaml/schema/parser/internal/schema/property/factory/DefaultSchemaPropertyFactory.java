@@ -41,7 +41,7 @@ public class DefaultSchemaPropertyFactory implements SchemaPropertyFactory {
 
     @Override
     public SchemaProperty createType(String typeName, Object value) throws Exception {
-        String type = propertyTypeDesignator.getType(value);
+        String type = propertyTypeDesignator.getType(value, specVersion);
         SchemaTypeMapper<Object> mapper = typeMappersHandler.getMapper(type);
         return mapper.map(specVersion, typeName, value, this);
     }
