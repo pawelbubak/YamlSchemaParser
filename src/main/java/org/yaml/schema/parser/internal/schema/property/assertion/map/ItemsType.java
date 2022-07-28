@@ -1,4 +1,4 @@
-package org.yaml.schema.parser.internal.schema.property.assertion.array;
+package org.yaml.schema.parser.internal.schema.property.assertion.map;
 
 import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificationException;
 import org.yaml.schema.parser.api.schema.annotation.SchemaVersion;
@@ -11,10 +11,10 @@ import org.yaml.schema.parser.internal.utils.SchemaPropertyNameDesignator;
 
 import java.util.Map;
 
-@SchemaPropertyContext(SchemaPropertyContext.Type.ARRAY)
+@SchemaPropertyContext(SchemaPropertyContext.Type.MAP)
 @SchemaPropertyName("itemsType")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class ItemsType extends AbstractArrayAssertion<SchemaProperty> {
+public class ItemsType extends AbstractMapAssertion<SchemaProperty> {
 
     public ItemsType(SchemaProperty value) throws SchemaPropertyNotExistsInSpecificationException {
         this(SpecVersion.current(), value);

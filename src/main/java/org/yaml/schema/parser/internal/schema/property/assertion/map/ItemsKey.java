@@ -1,4 +1,4 @@
-package org.yaml.schema.parser.internal.schema.property.assertion.array;
+package org.yaml.schema.parser.internal.schema.property.assertion.map;
 
 import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificationException;
 import org.yaml.schema.parser.api.schema.annotation.SchemaVersion;
@@ -11,28 +11,28 @@ import org.yaml.schema.parser.internal.utils.SchemaPropertyNameDesignator;
 
 import java.util.Map;
 
-@SchemaPropertyContext(SchemaPropertyContext.Type.ARRAY)
-@SchemaPropertyName("itemsType")
+@SchemaPropertyContext(SchemaPropertyContext.Type.MAP)
+@SchemaPropertyName("itemsKey")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class ItemsType extends AbstractArrayAssertion<SchemaProperty> {
+public class ItemsKey extends AbstractMapAssertion<SchemaProperty> {
 
-    public ItemsType(SchemaProperty value) throws SchemaPropertyNotExistsInSpecificationException {
+    public ItemsKey(SchemaProperty value) throws SchemaPropertyNotExistsInSpecificationException {
         this(SpecVersion.current(), value);
     }
 
-    public ItemsType(SpecVersion specVersion, SchemaProperty value)
+    public ItemsKey(SpecVersion specVersion, SchemaProperty value)
             throws SchemaPropertyNotExistsInSpecificationException {
         super(specVersion, value);
     }
 
     public static SchemaPropertyMapper<Map<String, Object>> mapper() {
-        return (specVersion, value, propertyFactory) -> new ItemsType(specVersion,
+        return (specVersion, value, propertyFactory) -> new ItemsKey(specVersion,
                 propertyFactory.createType(getSchemaPropertyName(specVersion), value));
     }
 
     private static String getSchemaPropertyName(SpecVersion specVersion)
             throws SchemaPropertyNotExistsInSpecificationException {
-        return SchemaPropertyNameDesignator.designatePropertyName(ItemsType.class, specVersion);
+        return SchemaPropertyNameDesignator.designatePropertyName(ItemsKey.class, specVersion);
     }
 
 }

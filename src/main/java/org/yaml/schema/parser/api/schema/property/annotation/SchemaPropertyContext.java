@@ -15,7 +15,7 @@ public @interface SchemaPropertyContext {
     Type value() default Type.DEFAULT;
 
     enum Type {
-        ARRAY, BOOLEAN, DATE, DEFAULT, NUMBER, OBJECT, STRING
+        ARRAY, BOOLEAN, DATE, DEFAULT, MAP, NUMBER, OBJECT, STRING
     }
 
 }

@@ -42,21 +42,57 @@ public class Test {
                     properties:
                       targets:
                         type: array
+                        required: true
+                        seq: 1
                         itemsType:
                           type: string
-                  job_id:
-                    type: integer
-                    exclusiveMin: 0
-                  job_name:
-                    type: string
-                    minLength: 5
-                    maxLength: 20
-                    pattern: "[a-zA-Z]*"
-                  job_start:
-                    type: date
-                    minDate: 2022-17-20
-                  one_time_job:
-                    type: boolean
+                      labels:
+                        type: map
+                        required: false
+                        seq: 2
+                        itemsKey:
+                          type: string
+                        itemsType:
+                          type: string
+                  job:
+                    type: object
+                    properties:
+                      job_id:
+                        type: integer
+                        exclusiveMin: 0
+                      job_name:
+                        type: string
+                        minLength: 5
+                        maxLength: 20
+                        pattern: "[a-zA-Z]*"
+                      job_start:
+                        type: date
+                        minDate: 2022-17-20
+                      scrape_interval:
+                        type: string
+                        enum: [ second, minute, hour ]
+                      one_time_job:
+                        type: boolean
+                        const: false
+
+                properties:
+                  global:
+                    type: object
+                    properties:
+                      scrape_interval:
+                        type: string
+                      evaluation_interval:
+                        type: string
+                      external_labels:
+                        type: map
+                        itemsKey:
+                          type: string
+                        itemsType:
+                          type: string
+                  rule_files:
+                    type: array
+                    itemsType:
+                      type: string
                 """;
     }
 
