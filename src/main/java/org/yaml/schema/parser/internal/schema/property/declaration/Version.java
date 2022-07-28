@@ -23,6 +23,11 @@ public class Version extends AbstractSchemaSimpleProperty<SpecVersion>
         super(specVersion, specVersion);
     }
 
+    @Override
+    public int sequenceNumber() {
+        return 1;
+    }
+
     public static SchemaPropertyMapper<String> mapper() {
         return (specVersion, value, provider) -> new Version(SpecVersion.of(value));
     }

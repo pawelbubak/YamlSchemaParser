@@ -1,5 +1,7 @@
 package org.yaml.schema.parser.api.schema;
 
+import org.yaml.schema.parser.api.serializer.Serializer;
+
 import java.util.stream.Stream;
 
 public interface Schema {
@@ -39,5 +41,7 @@ public interface Schema {
     default Stream<Schema> getSubschemas() {
         return Stream.empty();
     }
+
+    void serialize(Serializer serializer);
 
 }

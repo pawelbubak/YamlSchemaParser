@@ -24,6 +24,11 @@ public class Id extends AbstractSchemaSimpleProperty<URI> implements SchemaDecla
         super(specVersion, value);
     }
 
+    @Override
+    public int sequenceNumber() {
+        return 2;
+    }
+
     public static SchemaPropertyMapper<String> mapper() {
         return (specVersion, value, propertyFactory) -> new Id(specVersion, new URI(value));
     }

@@ -39,6 +39,11 @@ public class Declaration extends AbstractSchemaComplexProperty implements Schema
     }
 
     @Override
+    public int sequenceNumber() {
+        return 1;
+    }
+
+    @Override
     public URI id() {
         String idPropertyName = getPropertyName(Id.class);
         if (!containsProperty(idPropertyName)) {

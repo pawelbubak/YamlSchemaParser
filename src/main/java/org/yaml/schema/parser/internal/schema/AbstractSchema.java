@@ -1,14 +1,16 @@
 package org.yaml.schema.parser.internal.schema;
 
-import org.yaml.schema.parser.api.schema.version.SpecVersion;
 import org.yaml.schema.parser.api.schema.Schema;
-import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.annotation.SchemaVersion;
 import org.yaml.schema.parser.api.schema.property.SchemaProperty;
+import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
+import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.internal.schema.property.annotation.Description;
 import org.yaml.schema.parser.internal.schema.property.annotation.Title;
 
 import java.util.AbstractMap;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -80,4 +82,11 @@ public abstract class AbstractSchema extends AbstractMap<String, SchemaProperty>
         return schemaProperties.get(name);
     }
 
+    @Override
+    public void serialize(Serializer serializer) {
+        schemaProperties.values()
+                .stream()
+                .sorted(Comparator.comparingInt(SchemaProperty::sequenceNumber).thenComparing(SchemaProperty::name))
+                .forEach(e -> e.serialize(serializer));
+    }
 }

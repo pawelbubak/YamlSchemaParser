@@ -22,6 +22,11 @@ public class Title extends AbstractSchemaSimpleProperty<String> implements Schem
         super(specVersion, value);
     }
 
+    @Override
+    public int sequenceNumber() {
+        return 2;
+    }
+
     public static SchemaPropertyMapper<String> mapper() {
         return (specVersion, value, propertyFactory) -> new Title(specVersion, value);
     }

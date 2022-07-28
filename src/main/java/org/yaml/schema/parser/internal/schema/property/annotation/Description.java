@@ -22,6 +22,11 @@ public class Description extends AbstractSchemaSimpleProperty<String> implements
         super(specVersion, value);
     }
 
+    @Override
+    public int sequenceNumber() {
+        return 3;
+    }
+
     public static SchemaPropertyMapper<String> mapper() {
         return (specVersion, value, propertyFactory) -> new Description(specVersion, value);
     }

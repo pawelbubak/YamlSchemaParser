@@ -4,6 +4,7 @@ import org.yaml.schema.parser.api.schema.Schema;
 import org.yaml.schema.parser.api.schema.reader.YamlSchemaReader;
 import org.yaml.schema.parser.api.schema.reader.YamlSchemaReaderFactory;
 import org.yaml.schema.parser.api.schema.reader.YamlSchemaReaderFactoryProvider;
+import org.yaml.schema.parser.internal.serializer.SerializerImpl;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +25,8 @@ public class Test {
 
         try (schemaReader) {
             Schema schema = schemaReader.read();
-            System.out.println(schema);
+            // System.out.println(schema);
+            schema.serialize(new SerializerImpl());
         }
     }
 
@@ -35,7 +37,7 @@ public class Test {
                   version: "1.0"
                 title: Docker-compose schema
                 description: Example docker-compose configuration schema
-                
+                                
                 definitions:
                   job-target:
                     type: object

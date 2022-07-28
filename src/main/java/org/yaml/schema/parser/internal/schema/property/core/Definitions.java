@@ -26,6 +26,11 @@ public class Definitions extends AbstractSchemaComplexProperty {
         super(specVersion, properties);
     }
 
+    @Override
+    public int sequenceNumber() {
+        return 4;
+    }
+
     public static SchemaPropertyMapper<Map<String, Object>> mapper() {
         return (specVersion, value, propertyFactory) -> {
             Map<String, SchemaProperty> properties = new HashMap<>();
