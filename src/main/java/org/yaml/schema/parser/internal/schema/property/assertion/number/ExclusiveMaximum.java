@@ -6,6 +6,10 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.serializer.SerializationContext;
+import org.yaml.schema.parser.api.serializer.Serializer;
+
+import java.io.IOException;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.NUMBER)
 @SchemaPropertyName("exclusiveMax")
@@ -23,6 +27,11 @@ public class ExclusiveMaximum extends AbstractNumberAssertion<Integer> {
 
     public static SchemaPropertyMapper<Integer> mapper() {
         return (specVersion, value, propertyFactory) -> new ExclusiveMaximum(specVersion, value);
+    }
+
+    @Override
+    protected void serializeValue(Serializer serializer, SerializationContext serializationContext) throws IOException {
+        serializer.writePropertyValue(value());
     }
 
 }

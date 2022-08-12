@@ -3,6 +3,10 @@ package org.yaml.schema.parser.internal.schema.property;
 import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificationException;
 import org.yaml.schema.parser.api.schema.property.SchemaSimpleProperty;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.serializer.SerializationContext;
+import org.yaml.schema.parser.api.serializer.Serializer;
+
+import java.io.IOException;
 
 public abstract class AbstractSchemaSimpleProperty<T> extends AbstractSchemaProperty
         implements SchemaSimpleProperty<T> {
@@ -23,8 +27,13 @@ public abstract class AbstractSchemaSimpleProperty<T> extends AbstractSchemaProp
     }
 
     @Override
-    public String toString() {
-        return String.format("%s\n", value().toString());
+    public void serialize(Serializer serializer, SerializationContext serializationContext) throws IOException {
+        serializer.startSimpleElement(name());
+        serializeValue(serializer, serializationContext);
+        serializer.endSimpleElement();
     }
+
+    protected abstract void serializeValue(Serializer serializer, SerializationContext serializationContext)
+            throws IOException;
 
 }

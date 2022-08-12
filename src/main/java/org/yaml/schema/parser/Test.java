@@ -7,6 +7,7 @@ import org.yaml.schema.parser.api.schema.reader.YamlSchemaReaderFactoryProvider;
 import org.yaml.schema.parser.internal.serializer.SerializerImpl;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 
 public class Test {
@@ -26,7 +27,9 @@ public class Test {
         try (schemaReader) {
             Schema schema = schemaReader.read();
             // System.out.println(schema);
-            schema.serialize(new SerializerImpl());
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            schema.serialize(new SerializerImpl(byteArrayOutputStream));
+            System.out.println(byteArrayOutputStream.toString(StandardCharsets.UTF_8));
         }
     }
 
@@ -69,7 +72,7 @@ public class Test {
                         pattern: "[a-zA-Z]*"
                       job_start:
                         type: date
-                        minDate: 2022-17-20
+                        minDate: 2023-05-20T02:00:00.000+02:00
                       scrape_interval:
                         type: string
                         enum: [ second, minute, hour ]

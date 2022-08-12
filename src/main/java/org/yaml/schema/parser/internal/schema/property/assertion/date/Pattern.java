@@ -6,6 +6,10 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.serializer.SerializationContext;
+import org.yaml.schema.parser.api.serializer.Serializer;
+
+import java.io.IOException;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.DATE)
 @SchemaPropertyName("pattern")
@@ -22,6 +26,11 @@ public class Pattern extends AbstractDateAssertion<String> {
 
     public static SchemaPropertyMapper<String> mapper() {
         return (specVersion, value, propertyFactory) -> new Pattern(specVersion, value);
+    }
+
+    @Override
+    protected void serializeValue(Serializer serializer, SerializationContext serializationContext) throws IOException {
+        serializer.writePropertyValue(value());
     }
 
 }

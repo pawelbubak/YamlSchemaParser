@@ -4,8 +4,13 @@ import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificati
 import org.yaml.schema.parser.api.schema.property.SchemaComplexProperty;
 import org.yaml.schema.parser.api.schema.property.SchemaProperty;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.serializer.SerializationContext;
+import org.yaml.schema.parser.api.serializer.Serializer;
 
+import java.io.IOException;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 import static org.yaml.schema.parser.internal.schema.validation.SchemaPropertyValidationUtils.requireNonNull;
@@ -43,13 +48,25 @@ public abstract class AbstractSchemaComplexProperty extends AbstractSchemaProper
     }
 
     @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("\n");
-        for (SchemaProperty schemaProperty : getProperties()) {
-            stringBuilder.append(String.format("\t%s: %s", schemaProperty.name(), schemaProperty));
+    public void serialize(Serializer serializer, SerializationContext serializationContext) throws IOException {
+        serializer.startComplexProperty(name());
+        serializeProperties(serializer, serializationContext);
+        serializer.endComplexElement();
+    }
+
+    protected void serializeProperties(Serializer serializer, SerializationContext serializationContext)
+            throws IOException {
+        List<SchemaProperty> sortedProperties = getPropertiesSortedBySequenceNumberAndName();
+        for (SchemaProperty property : sortedProperties) {
+            property.serialize(serializer, serializationContext);
         }
-        return stringBuilder.toString();
+    }
+
+    private List<SchemaProperty> getPropertiesSortedBySequenceNumberAndName() {
+        return properties.values()
+                .stream()
+                .sorted(Comparator.comparingInt(SchemaProperty::sequenceNumber).thenComparing(SchemaProperty::name))
+                .toList();
     }
 
 }

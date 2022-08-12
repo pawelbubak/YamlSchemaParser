@@ -7,7 +7,11 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.serializer.SerializationContext;
+import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.internal.schema.property.AbstractSchemaSimpleProperty;
+
+import java.io.IOException;
 
 @SchemaPropertyContext
 @SchemaPropertyName("seq")
@@ -24,6 +28,16 @@ public class Sequence extends AbstractSchemaSimpleProperty<Integer> implements S
 
     public static SchemaPropertyMapper<Integer> mapper() {
         return (specVersion, value, propertyFactory) -> new Sequence(specVersion, value);
+    }
+
+    @Override
+    public int sequenceNumber() {
+        return 3;
+    }
+
+    @Override
+    protected void serializeValue(Serializer serializer, SerializationContext serializationContext) throws IOException {
+        serializer.writePropertyValue(value());
     }
 
 }

@@ -9,10 +9,8 @@ import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.internal.schema.property.annotation.Description;
 import org.yaml.schema.parser.internal.schema.property.annotation.Title;
 
-import java.util.AbstractMap;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.yaml.schema.parser.internal.schema.validation.SchemaPropertyValidationUtils.requireNonNull;
@@ -54,7 +52,8 @@ public abstract class AbstractSchema extends AbstractMap<String, SchemaProperty>
 
     @Override
     public Stream<Schema> getSubschemas() {
-        return schemaProperties.values().stream()
+        return schemaProperties.values()
+                .stream()
                 .filter(SchemaProperty::hasSubschemas)
                 .flatMap(SchemaProperty::getSubschemas);
     }
@@ -62,6 +61,14 @@ public abstract class AbstractSchema extends AbstractMap<String, SchemaProperty>
     @Override
     public Set<Entry<String, SchemaProperty>> entrySet() {
         return schemaProperties.entrySet();
+    }
+
+    @Override
+    public void serialize(Serializer serializer) throws IOException {
+        List<SchemaProperty> sortedProperties = getPropertiesSortedBySequenceNumberAndName();
+        for (SchemaProperty property : sortedProperties) {
+            property.serialize(serializer, null);
+        }
     }
 
     protected String getPropertyName(Class<?> clazz) {
@@ -82,11 +89,11 @@ public abstract class AbstractSchema extends AbstractMap<String, SchemaProperty>
         return schemaProperties.get(name);
     }
 
-    @Override
-    public void serialize(Serializer serializer) {
-        schemaProperties.values()
+    private List<SchemaProperty> getPropertiesSortedBySequenceNumberAndName() {
+        return schemaProperties.values()
                 .stream()
                 .sorted(Comparator.comparingInt(SchemaProperty::sequenceNumber).thenComparing(SchemaProperty::name))
-                .forEach(e -> e.serialize(serializer));
+                .toList();
     }
+
 }

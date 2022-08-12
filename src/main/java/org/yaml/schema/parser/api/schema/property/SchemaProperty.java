@@ -1,8 +1,10 @@
 package org.yaml.schema.parser.api.schema.property;
 
 import org.yaml.schema.parser.api.schema.Schema;
+import org.yaml.schema.parser.api.serializer.SerializationContext;
 import org.yaml.schema.parser.api.serializer.Serializer;
 
+import java.io.IOException;
 import java.util.stream.Stream;
 
 public interface SchemaProperty {
@@ -21,7 +23,7 @@ public interface SchemaProperty {
      */
     int sequenceNumber();
 
-    void serialize(Serializer serializer);
+    void serialize(Serializer serializer, SerializationContext serializationContext) throws IOException;
 
     /**
      * Checks whether this property has any subschemas or not.

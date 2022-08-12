@@ -7,8 +7,11 @@ import org.yaml.schema.parser.api.schema.annotation.SchemaVersion;
 import org.yaml.schema.parser.api.schema.property.SchemaDeclarationProperty;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.serializer.SerializationContext;
+import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.internal.schema.property.AbstractSchemaSimpleProperty;
 
+import java.io.IOException;
 import java.net.URI;
 
 @SchemaPropertyContext
@@ -31,6 +34,11 @@ public class Id extends AbstractSchemaSimpleProperty<URI> implements SchemaDecla
 
     public static SchemaPropertyMapper<String> mapper() {
         return (specVersion, value, propertyFactory) -> new Id(specVersion, new URI(value));
+    }
+
+    @Override
+    protected void serializeValue(Serializer serializer, SerializationContext serializationContext) throws IOException {
+        serializer.writePropertyValue(value().toString());
     }
 
 }

@@ -6,6 +6,8 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.serializer.SerializationContext;
+import org.yaml.schema.parser.api.serializer.Serializer;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.NUMBER)
 @SchemaPropertyName("integer")
@@ -23,6 +25,14 @@ public class IntegerAssertion extends AbstractNumberAssertion<Boolean> {
 
     public static SchemaPropertyMapper<Boolean> mapper() {
         return (specVersion, value, propertyFactory) -> new IntegerAssertion(specVersion, value);
+    }
+
+    @Override
+    public void serialize(Serializer serializer, SerializationContext serializationContext) {
+    }
+
+    @Override
+    protected void serializeValue(Serializer serializer, SerializationContext serializationContext) {
     }
 
 }

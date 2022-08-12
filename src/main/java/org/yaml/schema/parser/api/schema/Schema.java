@@ -1,7 +1,9 @@
 package org.yaml.schema.parser.api.schema;
 
+import org.yaml.schema.parser.api.serializer.SerializationContext;
 import org.yaml.schema.parser.api.serializer.Serializer;
 
+import java.io.IOException;
 import java.util.stream.Stream;
 
 public interface Schema {
@@ -42,6 +44,6 @@ public interface Schema {
         return Stream.empty();
     }
 
-    void serialize(Serializer serializer);
+    void serialize(Serializer serializer) throws IOException;
 
 }

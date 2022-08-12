@@ -7,7 +7,11 @@ import org.yaml.schema.parser.api.schema.annotation.SchemaVersion;
 import org.yaml.schema.parser.api.schema.property.SchemaAnnotationProperty;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.serializer.SerializationContext;
+import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.internal.schema.property.AbstractSchemaSimpleProperty;
+
+import java.io.IOException;
 
 @SchemaPropertyContext
 @SchemaPropertyName("title")
@@ -29,6 +33,11 @@ public class Title extends AbstractSchemaSimpleProperty<String> implements Schem
 
     public static SchemaPropertyMapper<String> mapper() {
         return (specVersion, value, propertyFactory) -> new Title(specVersion, value);
+    }
+
+    @Override
+    protected void serializeValue(Serializer serializer, SerializationContext serializationContext) throws IOException {
+        serializer.writePropertyValue(value());
     }
 
 }

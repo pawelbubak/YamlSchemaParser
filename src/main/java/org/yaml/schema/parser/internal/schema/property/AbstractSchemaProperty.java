@@ -3,7 +3,6 @@ package org.yaml.schema.parser.internal.schema.property;
 import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificationException;
 import org.yaml.schema.parser.api.schema.property.SchemaProperty;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
-import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.internal.utils.SchemaPropertyNameDesignator;
 
 public abstract class AbstractSchemaProperty implements SchemaProperty {
@@ -44,8 +43,4 @@ public abstract class AbstractSchemaProperty implements SchemaProperty {
         return SchemaPropertyNameDesignator.designatePropertyName(getClass(), specVersion);
     }
 
-    @Override
-    public void serialize(Serializer serializer) {
-        System.out.println(name);
-    }
 }

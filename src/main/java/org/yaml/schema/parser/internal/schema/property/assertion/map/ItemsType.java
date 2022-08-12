@@ -14,7 +14,7 @@ import java.util.Map;
 @SchemaPropertyContext(SchemaPropertyContext.Type.MAP)
 @SchemaPropertyName("itemsType")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class ItemsType extends AbstractMapAssertion<SchemaProperty> {
+public class ItemsType extends AbstractMapItemsAssertion {
 
     public ItemsType(SchemaProperty value) throws SchemaPropertyNotExistsInSpecificationException {
         this(SpecVersion.current(), value);
@@ -26,8 +26,8 @@ public class ItemsType extends AbstractMapAssertion<SchemaProperty> {
     }
 
     public static SchemaPropertyMapper<Map<String, Object>> mapper() {
-        return (specVersion, value, propertyFactory) -> new ItemsType(specVersion,
-                propertyFactory.createType(getSchemaPropertyName(specVersion), value));
+        return (specVersion, value, propertyFactory) -> propertyFactory.createType(getSchemaPropertyName(specVersion),
+                value);
     }
 
     private static String getSchemaPropertyName(SpecVersion specVersion)

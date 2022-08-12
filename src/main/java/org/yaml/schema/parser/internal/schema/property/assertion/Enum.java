@@ -6,8 +6,11 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.serializer.SerializationContext;
+import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.internal.schema.property.AbstractSchemaSimpleProperty;
 
+import java.io.IOException;
 import java.util.List;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.DEFAULT)
@@ -25,6 +28,11 @@ public class Enum extends AbstractSchemaSimpleProperty<List<Object>> {
 
     public static SchemaPropertyMapper<List<Object>> mapper() {
         return (specVersion, value, propertyFactory) -> new Enum(specVersion, value);
+    }
+
+    @Override
+    protected void serializeValue(Serializer serializer, SerializationContext serializationContext) throws IOException {
+        serializer.writePropertyValue(value().toString());
     }
 
 }
