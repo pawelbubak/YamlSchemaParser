@@ -29,10 +29,12 @@ public class IntegerAssertion extends AbstractNumberAssertion<Boolean> {
 
     @Override
     public void serialize(Serializer serializer, SerializationContext serializationContext) {
+        // DO NOTHING
     }
 
     @Override
     protected void serializeValue(Serializer serializer, SerializationContext serializationContext) {
+        // DO NOTHING
     }
 
 }

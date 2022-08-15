@@ -1,6 +1,5 @@
 package org.yaml.schema.parser.api.schema;
 
-import org.yaml.schema.parser.api.serializer.SerializationContext;
 import org.yaml.schema.parser.api.serializer.Serializer;
 
 import java.io.IOException;

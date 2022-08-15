@@ -17,20 +17,27 @@ public class DefaultYamlSchemaReaderFactory implements YamlSchemaReaderFactory {
     private final SchemaPropertyFactoryProvider propertyFactoryProvider;
 
     public DefaultYamlSchemaReaderFactory() {
-        this.yamlReaderProvider = YamlReaderProvider.provider();
-        this.specVersionDesignatorProvider = SchemaSpecVersionDesignatorProvider.provider();
-        this.propertyFactoryProvider = SchemaPropertyFactoryProvider.provider();
+        this(YamlReaderProvider.provider(), SchemaSpecVersionDesignatorProvider.provider(),
+                SchemaPropertyFactoryProvider.provider());
+    }
+
+    public DefaultYamlSchemaReaderFactory(YamlReaderProvider yamlReaderProvider,
+            SchemaSpecVersionDesignatorProvider specVersionDesignatorProvider,
+            SchemaPropertyFactoryProvider propertyFactoryProvider) {
+        this.yamlReaderProvider = yamlReaderProvider;
+        this.specVersionDesignatorProvider = specVersionDesignatorProvider;
+        this.propertyFactoryProvider = propertyFactoryProvider;
+    }
+
+    @Override
+    public YamlSchemaReader createSchemaReader(Path path) throws IOException {
+        return createSchemaReader(Files.newInputStream(path));
     }
 
     @Override
     public YamlSchemaReader createSchemaReader(InputStream inputStream) {
         return new DefaultYamlSchemaReader(yamlReaderProvider.createReader(),
                 specVersionDesignatorProvider.createDesignator(), propertyFactoryProvider, inputStream);
-    }
-
-    @Override
-    public YamlSchemaReader createSchemaReader(Path path) throws IOException {
-        return createSchemaReader(Files.newInputStream(path));
     }
 
 }
