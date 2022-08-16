@@ -35,6 +35,13 @@ public class ValidationMessage extends AbstractMessage {
     }
 
     public enum Key implements AbstractMessage.Key {
+        /* Number validation messages */
+        EXCLUSIVE_MAXIMUM_VALIDATION_PROBLEM,
+        EXCLUSIVE_MINIMUM_VALIDATION_PROBLEM,
+        INTEGER_VALIDATION_PROBLEM,
+        MAXIMUM_VALIDATION_PROBLEM,
+        MINIMUM_VALIDATION_PROBLEM,
+        /* Test messages */
         TEST_MESSAGE
     }
 

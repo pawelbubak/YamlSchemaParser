@@ -6,31 +6,43 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
-import org.yaml.schema.parser.api.serializer.SerializationContext;
-import org.yaml.schema.parser.api.serializer.Serializer;
+import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
+import org.yaml.schema.parser.internal.schema.property.assertion.AbstractNumberAssertion;
+import org.yaml.schema.parser.internal.validator.problem.ValidationMessage;
 
-import java.io.IOException;
+import java.math.BigDecimal;
+
+import static org.yaml.schema.parser.internal.schema.property.assertion.MapperUtils.mapToBigDecimal;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.NUMBER)
 @SchemaPropertyName("min")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class Minimum extends AbstractNumberAssertion<Integer> {
+public class Minimum extends AbstractNumberAssertion {
 
-    public Minimum(Integer value) throws SchemaPropertyNotExistsInSpecificationException {
+    public Minimum(BigDecimal value) throws SchemaPropertyNotExistsInSpecificationException {
         this(SpecVersion.current(), value);
     }
 
-    public Minimum(SpecVersion specVersion, Integer value) throws SchemaPropertyNotExistsInSpecificationException {
+    public Minimum(SpecVersion specVersion, BigDecimal value) throws SchemaPropertyNotExistsInSpecificationException {
         super(specVersion, value);
     }
 
-    public static SchemaPropertyMapper<Integer> mapper() {
-        return (specVersion, value, propertyFactory) -> new Minimum(specVersion, value);
+    public static SchemaPropertyMapper<Number> mapper() {
+        return (specVersion, value, propertyFactory) -> new Minimum(specVersion, mapToBigDecimal(value));
     }
 
     @Override
-    protected void serializeValue(Serializer serializer, SerializationContext serializationContext) throws IOException {
-        serializer.writePropertyValue(value());
+    public boolean testValue(Object rawValue) {
+        if (rawValue != null) {
+            BigDecimal value = mapToBigDecimal(rawValue);
+            return value.compareTo(value()) >= 0;
+        }
+        return false;
+    }
+
+    @Override
+    protected AbstractMessage.Key getProblemMessageCode() {
+        return ValidationMessage.Key.MINIMUM_VALIDATION_PROBLEM;
     }
 
 }

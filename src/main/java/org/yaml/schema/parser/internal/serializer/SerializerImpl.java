@@ -8,6 +8,8 @@ import org.yaml.schema.parser.internal.serializer.configuration.DefaultSerializa
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -50,6 +52,16 @@ public class SerializerImpl implements Serializer {
     }
 
     @Override
+    public void writePropertyValue(BigDecimal value) throws IOException {
+        boolean isInteger = value.signum() == 0 || value.scale() <= 0 || value.stripTrailingZeros().scale() <= 0;
+        NumberFormat formatter = isInteger
+                ? serializationConfiguration.getIntegerFormatter()
+                : serializationConfiguration.getDecimalFormatter();
+        outputStream.write(SerializationConfiguration.SPACE.getBytes(serializationConfiguration.getCharset()));
+        outputStream.write(formatter.format(value).getBytes(serializationConfiguration.getCharset()));
+    }
+
+    @Override
     public void writePropertyValue(Boolean value) throws IOException {
         outputStream.write(SerializationConfiguration.SPACE.getBytes(serializationConfiguration.getCharset()));
         outputStream.write(String.valueOf(value).getBytes(serializationConfiguration.getCharset()));
@@ -59,32 +71,32 @@ public class SerializerImpl implements Serializer {
     public void writePropertyValue(Date value) throws IOException {
         outputStream.write(SerializationConfiguration.SPACE.getBytes(serializationConfiguration.getCharset()));
         outputStream.write(serializationConfiguration.getDateFormatter()
-                .format(value)
-                .getBytes(serializationConfiguration.getCharset()));
+                                                     .format(value)
+                                                     .getBytes(serializationConfiguration.getCharset()));
     }
 
     @Override
     public void writePropertyValue(Double value) throws IOException {
         outputStream.write(SerializationConfiguration.SPACE.getBytes(serializationConfiguration.getCharset()));
         outputStream.write(serializationConfiguration.getDecimalFormatter()
-                .format(value)
-                .getBytes(serializationConfiguration.getCharset()));
+                                                     .format(value)
+                                                     .getBytes(serializationConfiguration.getCharset()));
     }
 
     @Override
     public void writePropertyValue(Integer value) throws IOException {
         outputStream.write(SerializationConfiguration.SPACE.getBytes(serializationConfiguration.getCharset()));
         outputStream.write(serializationConfiguration.getIntegerFormatter()
-                .format(value)
-                .getBytes(serializationConfiguration.getCharset()));
+                                                     .format(value)
+                                                     .getBytes(serializationConfiguration.getCharset()));
     }
 
     @Override
     public void writePropertyValue(Long value) throws IOException {
         outputStream.write(SerializationConfiguration.SPACE.getBytes(serializationConfiguration.getCharset()));
         outputStream.write(serializationConfiguration.getIntegerFormatter()
-                .format(value)
-                .getBytes(serializationConfiguration.getCharset()));
+                                                     .format(value)
+                                                     .getBytes(serializationConfiguration.getCharset()));
     }
 
     @Override

@@ -8,7 +8,6 @@ import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
 import org.yaml.schema.parser.api.serializer.SerializationContext;
 import org.yaml.schema.parser.api.serializer.Serializer;
-import org.yaml.schema.parser.internal.schema.property.assertion.number.AbstractNumberAssertion;
 
 import java.io.IOException;
 import java.util.Date;
@@ -16,7 +15,7 @@ import java.util.Date;
 @SchemaPropertyContext(SchemaPropertyContext.Type.DATE)
 @SchemaPropertyName("maxDate")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class MaximumDate extends AbstractNumberAssertion<Date> {
+public class MaximumDate extends AbstractDateAssertion<Date> {
 
     public MaximumDate(Date value) throws SchemaPropertyNotExistsInSpecificationException {
         this(SpecVersion.current(), value);

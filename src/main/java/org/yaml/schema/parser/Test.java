@@ -28,7 +28,7 @@ public class Test {
         problemHandler.handleProblem(problem);
 
         problemHandler = ProblemHandlerProvider.provider().createThrowingProblemHandler();
-        problemHandler.handleProblem(problem);
+//        problemHandler.handleProblem(problem);
 
         test();
     }

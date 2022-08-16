@@ -9,4 +9,6 @@ public interface SchemaSimpleProperty<T> extends SchemaProperty {
      */
     T value();
 
+    boolean testValue(Object value);
+
 }
