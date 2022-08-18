@@ -4,8 +4,8 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.annotation.SchemaVersion;
 import org.yaml.schema.parser.api.schema.reader.SchemaSpecVersionDesignator;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
-import org.yaml.schema.parser.internal.schema.property.declaration.Declaration;
-import org.yaml.schema.parser.internal.schema.property.declaration.Version;
+import org.yaml.schema.parser.internal.schema.property.core.declaration.Declaration;
+import org.yaml.schema.parser.internal.schema.property.core.declaration.Version;
 
 import java.util.HashSet;
 import java.util.Map;

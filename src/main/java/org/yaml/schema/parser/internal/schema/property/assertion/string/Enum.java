@@ -1,4 +1,4 @@
-package org.yaml.schema.parser.internal.schema.property.assertion;
+package org.yaml.schema.parser.internal.schema.property.assertion.string;
 
 import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificationException;
 import org.yaml.schema.parser.api.schema.annotation.SchemaVersion;
@@ -8,46 +8,45 @@ import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
 import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
-import org.yaml.schema.parser.internal.validator.problem.ValidationMessage;
+import org.yaml.schema.parser.internal.schema.property.AbstractSchemaSimpleProperty;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
-@SchemaPropertyContext(SchemaPropertyContext.Type.DEFAULT)
-@SchemaPropertyName("required")
+@SchemaPropertyContext(SchemaPropertyContext.Type.STRING)
+@SchemaPropertyName("enum")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class Required extends AbstractBooleanAssertion {
+public class Enum extends AbstractSchemaSimpleProperty<List<String>> {
 
-    public Required(Boolean value) throws SchemaPropertyNotExistsInSpecificationException {
+    public Enum(List<String> value) throws SchemaPropertyNotExistsInSpecificationException {
         this(SpecVersion.current(), value);
     }
 
-    public Required(SpecVersion specVersion, Boolean value) throws SchemaPropertyNotExistsInSpecificationException {
+    public Enum(SpecVersion specVersion, List<String> value) throws SchemaPropertyNotExistsInSpecificationException {
         super(specVersion, value);
     }
 
-    public static SchemaPropertyMapper<Boolean> mapper() {
-        return (specVersion, value, propertyFactory) -> new Required(specVersion, value);
-    }
-
-    @Override
-    public int sequenceNumber() {
-        return 2;
+    public static SchemaPropertyMapper<List<String>> mapper() {
+        return (specVersion, value, propertyFactory) -> new Enum(specVersion, value);
     }
 
     @Override
     protected void serializeValue(Serializer serializer) throws IOException {
-        serializer.writePropertyValue(value());
+        serializer.writePropertyValue(value().toString());
     }
 
     @Override
     public boolean testValue(Object value) {
-        return value != null;
+        if (value instanceof String) {
+            return value().contains(value);
+        }
+        return false;
     }
 
     @Override
     protected AbstractMessage.Key getProblemMessageCode() {
-        return ValidationMessage.Key.REQUIRED_VALIDATION_PROBLEM;
+        return null;
     }
 
     @Override

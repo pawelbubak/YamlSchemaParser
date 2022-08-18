@@ -7,14 +7,19 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.serializer.Serializer;
+import org.yaml.schema.parser.api.validator.YamlValidator;
+import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
+import org.yaml.schema.parser.internal.schema.property.assertion.AbstractSchemaPropertyAssertion;
 import org.yaml.schema.parser.internal.utils.SchemaPropertyNameDesignator;
 
+import java.io.IOException;
 import java.util.Map;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.MAP)
 @SchemaPropertyName("itemsType")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class ItemsType extends AbstractMapItemsAssertion {
+public class ItemsType extends AbstractSchemaPropertyAssertion {
 
     public ItemsType(SchemaProperty value) throws SchemaPropertyNotExistsInSpecificationException {
         this(SpecVersion.current(), value);
@@ -26,13 +31,43 @@ public class ItemsType extends AbstractMapItemsAssertion {
     }
 
     public static SchemaPropertyMapper<Map<String, Object>> mapper() {
-        return (specVersion, value, propertyFactory) -> propertyFactory.createType(getSchemaPropertyName(specVersion),
-                value);
+        return (specVersion, value, propertyFactory) -> {
+            String propertyName = SchemaPropertyNameDesignator.designatePropertyName(ItemsType.class, specVersion);
+            SchemaProperty typeProperty = propertyFactory.createType(propertyName, value);
+            return new ItemsType(specVersion, typeProperty);
+        };
     }
 
-    private static String getSchemaPropertyName(SpecVersion specVersion)
-            throws SchemaPropertyNotExistsInSpecificationException {
-        return SchemaPropertyNameDesignator.designatePropertyName(ItemsType.class, specVersion);
+    @Override
+    public void serialize(Serializer serializer) throws IOException {
+        serializeValue(serializer);
+    }
+
+    @Override
+    public void test(YamlValidator validator, Object rawValue) {
+        if (rawValue instanceof Map<?, ?> values) {
+            for (Map.Entry<?, ?> entry : values.entrySet()) {
+                validator.startElement(entry.getKey());
+                Object value = entry.getValue();
+                value().test(validator, value);
+                validator.endElement();
+            }
+        }
+    }
+
+    @Override
+    public boolean testValue(Object value) {
+        return true;
+    }
+
+    @Override
+    protected AbstractMessage.Key getProblemMessageCode() {
+        return null;
+    }
+
+    @Override
+    protected Map<String, Object> getProblemMessageArguments() {
+        return null;
     }
 
 }

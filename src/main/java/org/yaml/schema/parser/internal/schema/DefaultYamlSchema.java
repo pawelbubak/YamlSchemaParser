@@ -1,9 +1,11 @@
 package org.yaml.schema.parser.internal.schema;
 
-import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificationException;
 import org.yaml.schema.parser.api.schema.YamlSchema;
 import org.yaml.schema.parser.api.schema.property.SchemaProperty;
-import org.yaml.schema.parser.internal.schema.property.declaration.Declaration;
+import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.internal.schema.property.core.declaration.Declaration;
+import org.yaml.schema.parser.internal.utils.SchemaPropertyNameDesignator;
 
 import java.net.URI;
 import java.util.Map;
@@ -31,19 +33,16 @@ public class DefaultYamlSchema extends AbstractSchema implements YamlSchema {
     }
 
     private Declaration getDeclaration() {
-        String declarationPropertyName = getPropertyName(Declaration.class);
-        if (!containsProperty(declarationPropertyName)) {
-            return null;
+        try {
+            String propertyName = SchemaPropertyNameDesignator.designatePropertyName(Declaration.class,
+                    getSpecVersion());
+            if (!containsProperty(propertyName)) {
+                return null;
+            }
+            return (Declaration) getProperty(propertyName);
+        } catch (SchemaPropertyNotExistsInSpecificationException e) {
+            throw new RuntimeException(e);
         }
-        return (Declaration) getProperty(declarationPropertyName);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (SchemaProperty schemaProperty: this.values()) {
-            stringBuilder.append(String.format("%s: %s", schemaProperty.name(), schemaProperty));
-        }
-        return stringBuilder.toString();
-    }
 }

@@ -2,21 +2,18 @@ package org.yaml.schema.parser.internal.schema.property.core;
 
 import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificationException;
 import org.yaml.schema.parser.api.schema.annotation.SchemaVersion;
-import org.yaml.schema.parser.api.schema.property.SchemaAnnotationProperty;
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyContext;
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
-import org.yaml.schema.parser.api.serializer.SerializationContext;
 import org.yaml.schema.parser.api.serializer.Serializer;
-import org.yaml.schema.parser.internal.schema.property.AbstractSchemaSimpleProperty;
 
 import java.io.IOException;
 
 @SchemaPropertyContext
 @SchemaPropertyName("type")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class Type extends AbstractSchemaSimpleProperty<String> implements SchemaAnnotationProperty<String> {
+public class Type extends AbstractDescriptionProperty<String> {
 
     public Type(String value) throws SchemaPropertyNotExistsInSpecificationException {
         this(SpecVersion.current(), value);
@@ -36,7 +33,7 @@ public class Type extends AbstractSchemaSimpleProperty<String> implements Schema
     }
 
     @Override
-    protected void serializeValue(Serializer serializer, SerializationContext serializationContext) throws IOException {
+    protected void serializeValue(Serializer serializer) throws IOException {
         serializer.writePropertyValue(value());
     }
 

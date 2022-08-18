@@ -6,14 +6,13 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.type.annotation.SchemaTypeName;
 import org.yaml.schema.parser.api.schema.type.mapper.SchemaTypeMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
-import org.yaml.schema.parser.internal.schema.property.AbstractSchemaComplexProperty;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @SchemaTypeName("string")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class StringType extends AbstractSchemaComplexProperty {
+public class StringType extends AbstractType {
 
     public StringType(String name, Map<String, SchemaProperty> properties) {
         this(SpecVersion.current(), name, properties);

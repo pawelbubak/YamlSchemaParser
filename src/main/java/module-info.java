@@ -12,6 +12,7 @@ module YamlSchemaParser {
     uses org.yaml.schema.parser.api.schema.reader.YamlSchemaReaderFactoryProvider;
     uses org.yaml.schema.parser.api.schema.type.designator.SchemaPropertyTypeDesignatorProvider;
     uses org.yaml.schema.parser.api.schema.type.mapper.SchemaTypeMappersLoaderProvider;
+    uses org.yaml.schema.parser.api.validator.context.ValidationContextProvider;
     uses org.yaml.schema.parser.api.validator.problem.LineFormatterProvider;
     uses org.yaml.schema.parser.api.validator.problem.ProblemHandlerProvider;
     uses org.yaml.schema.parser.api.validator.problem.ProblemPrinterProvider;
@@ -23,6 +24,7 @@ module YamlSchemaParser {
     provides org.yaml.schema.parser.api.schema.reader.YamlSchemaReaderFactoryProvider with org.yaml.schema.parser.internal.schema.reader.DefaultYamlSchemaReaderFactoryProvider;
     provides org.yaml.schema.parser.api.schema.type.designator.SchemaPropertyTypeDesignatorProvider with org.yaml.schema.parser.internal.schema.type.designator.DefaultSchemaPropertyTypeDesignatorProvider;
     provides org.yaml.schema.parser.api.schema.type.mapper.SchemaTypeMappersLoaderProvider with org.yaml.schema.parser.internal.schema.type.mapper.DefaultSchemaTypeMappersLoaderProvider;
+    provides org.yaml.schema.parser.api.validator.context.ValidationContextProvider with org.yaml.schema.parser.internal.validator.context.DefaultValidationContextProvider;
     provides org.yaml.schema.parser.api.validator.problem.LineFormatterProvider with org.yaml.schema.parser.internal.validator.problem.DefaultLineFormatterProvider;
     provides org.yaml.schema.parser.api.validator.problem.ProblemHandlerProvider with org.yaml.schema.parser.internal.validator.problem.DefaultProblemHandlerProvider;
     provides org.yaml.schema.parser.api.validator.problem.ProblemPrinterProvider with org.yaml.schema.parser.internal.validator.problem.DefaultProblemPrinterProvider;

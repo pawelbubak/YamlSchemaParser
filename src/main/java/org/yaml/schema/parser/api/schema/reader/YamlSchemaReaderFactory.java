@@ -10,10 +10,10 @@ import java.nio.file.Path;
 public interface YamlSchemaReaderFactory {
 
     /**
-     * Creates a JSON schema reader from a path.
+     * Creates a YAML schema reader from a path.
      *
-     * @param path the path from which a JSON schema is to be read.
-     * @return newly created instance of JSON schema reader.
+     * @param path the path from which a YAML schema is to be read.
+     * @return newly created instance of YAML schema reader.
      * @throws IOException          if an I/O error occurs while creating reader.
      * @throws NullPointerException if the specified {@code path} is {@code null}.
      * @see YamlSchemaReader
@@ -23,8 +23,8 @@ public interface YamlSchemaReaderFactory {
     /**
      * Creates a YAML schema reader from a byte stream.
      *
-     * @param input the byte stream from which a JSON schema is to be read.
-     * @return newly created instance of JSON schema reader.
+     * @param input the byte stream from which a YAML schema is to be read.
+     * @return newly created instance of YAML schema reader.
      * @throws NullPointerException if the specified {@code in} is {@code null}.
      * @see YamlSchemaReader
      */

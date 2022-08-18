@@ -6,15 +6,20 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
-import org.yaml.schema.parser.api.serializer.SerializationContext;
-import org.yaml.schema.parser.api.serializer.Serializer;
+import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
+import org.yaml.schema.parser.internal.schema.property.assertion.AbstractStringAssertion;
+import org.yaml.schema.parser.internal.validator.problem.ValidationMessage;
 
-import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.DATE)
 @SchemaPropertyName("pattern")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class Pattern extends AbstractDateAssertion<String> {
+public class Pattern extends AbstractStringAssertion {
 
     public Pattern(String value) throws SchemaPropertyNotExistsInSpecificationException {
         this(SpecVersion.current(), value);
@@ -29,8 +34,29 @@ public class Pattern extends AbstractDateAssertion<String> {
     }
 
     @Override
-    protected void serializeValue(Serializer serializer, SerializationContext serializationContext) throws IOException {
-        serializer.writePropertyValue(value());
+    public boolean testValue(Object value) {
+        if (value instanceof Date) {
+            return true;
+        } else if (value instanceof String) {
+            SimpleDateFormat format = new SimpleDateFormat(value());
+            try {
+                format.parse((String) value);
+                return true;
+            } catch (ParseException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected AbstractMessage.Key getProblemMessageCode() {
+        return ValidationMessage.Key.DATE_PATTERN_VALIDATION_PROBLEM;
+    }
+
+    @Override
+    protected Map<String, Object> getProblemMessageArguments() {
+        return Collections.singletonMap("pattern", value());
     }
 
 }

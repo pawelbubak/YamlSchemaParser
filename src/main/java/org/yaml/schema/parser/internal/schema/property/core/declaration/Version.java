@@ -1,23 +1,20 @@
-package org.yaml.schema.parser.internal.schema.property.declaration;
+package org.yaml.schema.parser.internal.schema.property.core.declaration;
 
 import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificationException;
 import org.yaml.schema.parser.api.schema.annotation.SchemaVersion;
-import org.yaml.schema.parser.api.schema.property.SchemaDeclarationProperty;
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyContext;
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
-import org.yaml.schema.parser.api.serializer.SerializationContext;
 import org.yaml.schema.parser.api.serializer.Serializer;
-import org.yaml.schema.parser.internal.schema.property.AbstractSchemaSimpleProperty;
+import org.yaml.schema.parser.internal.schema.property.core.AbstractDescriptionProperty;
 
 import java.io.IOException;
 
 @SchemaPropertyContext
 @SchemaPropertyName("version")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class Version extends AbstractSchemaSimpleProperty<SpecVersion>
-        implements SchemaDeclarationProperty<SpecVersion> {
+public class Version extends AbstractDescriptionProperty<SpecVersion> {
 
     public Version() throws SchemaPropertyNotExistsInSpecificationException {
         this(SpecVersion.current());
@@ -37,7 +34,7 @@ public class Version extends AbstractSchemaSimpleProperty<SpecVersion>
     }
 
     @Override
-    protected void serializeValue(Serializer serializer, SerializationContext serializationContext) throws IOException {
+    protected void serializeValue(Serializer serializer) throws IOException {
         serializer.writePropertyValue(value().id());
     }
 

@@ -1,9 +1,12 @@
 package org.yaml.schema.parser.api.schema;
 
 import org.yaml.schema.parser.api.serializer.Serializer;
+import org.yaml.schema.parser.api.validator.YamlValidator;
+import org.yaml.schema.parser.api.validator.problem.ProblemHandler;
+import org.yaml.schema.parser.internal.schema.property.core.Definitions;
+import org.yaml.schema.parser.internal.schema.property.core.Properties;
 
 import java.io.IOException;
-import java.util.stream.Stream;
 
 public interface Schema {
 
@@ -25,24 +28,18 @@ public interface Schema {
         return null;
     }
 
-    /**
-     * Checks whether this schema has any subschemas or not.
-     *
-     * @return {@code true} if this schema contains any subschemas, {@code false} otherwise.
-     */
-    default boolean hasSubschemas() {
-        return false;
+    default Definitions definitions() {
+        return null;
     }
 
-    /**
-     * Returns all the subschemas contained in this schema.
-     *
-     * @return the stream of subschemas contained in this schema.
-     */
-    default Stream<Schema> getSubschemas() {
-        return Stream.empty();
+    default Properties properties() {
+        return null;
     }
 
     void serialize(Serializer serializer) throws IOException;
+
+    void test(ProblemHandler problemHandler, Object yaml);
+
+    void test(YamlValidator validator, Object yaml);
 
 }

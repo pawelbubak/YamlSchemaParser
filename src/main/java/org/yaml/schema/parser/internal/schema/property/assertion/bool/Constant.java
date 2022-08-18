@@ -1,4 +1,4 @@
-package org.yaml.schema.parser.internal.schema.property.assertion;
+package org.yaml.schema.parser.internal.schema.property.assertion.bool;
 
 import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificationException;
 import org.yaml.schema.parser.api.schema.annotation.SchemaVersion;
@@ -8,31 +8,26 @@ import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
 import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
-import org.yaml.schema.parser.internal.validator.problem.ValidationMessage;
+import org.yaml.schema.parser.internal.schema.property.assertion.AbstractBooleanAssertion;
 
 import java.io.IOException;
 import java.util.Map;
 
-@SchemaPropertyContext(SchemaPropertyContext.Type.DEFAULT)
-@SchemaPropertyName("required")
+@SchemaPropertyContext(SchemaPropertyContext.Type.BOOLEAN)
+@SchemaPropertyName("const")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class Required extends AbstractBooleanAssertion {
+public class Constant extends AbstractBooleanAssertion {
 
-    public Required(Boolean value) throws SchemaPropertyNotExistsInSpecificationException {
+    public Constant(Boolean value) throws SchemaPropertyNotExistsInSpecificationException {
         this(SpecVersion.current(), value);
     }
 
-    public Required(SpecVersion specVersion, Boolean value) throws SchemaPropertyNotExistsInSpecificationException {
+    public Constant(SpecVersion specVersion, Boolean value) throws SchemaPropertyNotExistsInSpecificationException {
         super(specVersion, value);
     }
 
     public static SchemaPropertyMapper<Boolean> mapper() {
-        return (specVersion, value, propertyFactory) -> new Required(specVersion, value);
-    }
-
-    @Override
-    public int sequenceNumber() {
-        return 2;
+        return (specVersion, value, propertyFactory) -> new Constant(specVersion, value);
     }
 
     @Override
@@ -42,12 +37,15 @@ public class Required extends AbstractBooleanAssertion {
 
     @Override
     public boolean testValue(Object value) {
-        return value != null;
+        if (value instanceof Boolean) {
+            return value().equals(value);
+        }
+        return false;
     }
 
     @Override
     protected AbstractMessage.Key getProblemMessageCode() {
-        return ValidationMessage.Key.REQUIRED_VALIDATION_PROBLEM;
+        return null;
     }
 
     @Override

@@ -6,23 +6,44 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
+import org.yaml.schema.parser.internal.schema.property.assertion.AbstractNumberAssertion;
+import org.yaml.schema.parser.internal.validator.problem.ValidationMessage;
+
+import java.math.BigDecimal;
+
+import static org.yaml.schema.parser.internal.schema.property.assertion.MapperUtils.mapToBigDecimal;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.STRING)
 @SchemaPropertyName("minLength")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class MinimumLength extends AbstractStringLengthAssertion {
+public class MinimumLength extends AbstractNumberAssertion {
 
-    public MinimumLength(Integer value) throws SchemaPropertyNotExistsInSpecificationException {
+    public MinimumLength(BigDecimal value) throws SchemaPropertyNotExistsInSpecificationException {
         this(SpecVersion.current(), value);
     }
 
-    public MinimumLength(SpecVersion specVersion, Integer value)
+    public MinimumLength(SpecVersion specVersion, BigDecimal value)
             throws SchemaPropertyNotExistsInSpecificationException {
         super(specVersion, value);
     }
 
-    public static SchemaPropertyMapper<Integer> mapper() {
-        return (specVersion, value, propertyFactory) -> new MinimumLength(specVersion, value);
+    public static SchemaPropertyMapper<Number> mapper() {
+        return (specVersion, value, propertyFactory) -> new MinimumLength(specVersion, mapToBigDecimal(value));
+    }
+
+    @Override
+    public boolean testValue(Object rawValue) {
+        if (rawValue instanceof String) {
+            BigDecimal value = mapToBigDecimal(((String) rawValue).length());
+            return value.compareTo(value()) >= 0;
+        }
+        return false;
+    }
+
+    @Override
+    protected AbstractMessage.Key getProblemMessageCode() {
+        return ValidationMessage.Key.MINIMUM_LENGTH_VALIDATION_PROBLEM;
     }
 
 }

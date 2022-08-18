@@ -7,7 +7,6 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
-import org.yaml.schema.parser.api.serializer.SerializationContext;
 import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
 import org.yaml.schema.parser.internal.schema.property.AbstractSchemaSimpleProperty;
@@ -38,22 +37,26 @@ public class IntegerAssertion extends AbstractSchemaSimpleProperty<Boolean>
     }
 
     @Override
-    public void serialize(Serializer serializer, SerializationContext serializationContext) {
+    public void serialize(Serializer serializer) {
         // DO NOTHING
     }
 
     @Override
-    protected void serializeValue(Serializer serializer, SerializationContext serializationContext) {
+    protected void serializeValue(Serializer serializer) {
         // DO NOTHING
     }
 
     @Override
     public boolean testValue(Object rawValue) {
         if (rawValue != null) {
-            BigDecimal value = mapToBigDecimal(rawValue);
-            return value.signum() == 0 || value.scale() <= 0 || value.stripTrailingZeros().scale() <= 0;
+            try {
+                BigDecimal value = mapToBigDecimal(rawValue);
+                return value.signum() == 0 || value.scale() <= 0 || value.stripTrailingZeros().scale() <= 0;
+            } catch (NumberFormatException ignored) {
+                return false;
+            }
         }
-        return false;
+        return true;
     }
 
     @Override

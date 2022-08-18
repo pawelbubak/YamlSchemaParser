@@ -6,14 +6,13 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.type.annotation.SchemaTypeName;
 import org.yaml.schema.parser.api.schema.type.mapper.SchemaTypeMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
-import org.yaml.schema.parser.internal.schema.property.AbstractSchemaComplexProperty;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @SchemaTypeName("boolean")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class BooleanType extends AbstractSchemaComplexProperty {
+public class BooleanType extends AbstractType {
 
     public BooleanType(String name, Map<String, SchemaProperty> properties) {
         this(SpecVersion.current(), name, properties);
@@ -26,8 +25,6 @@ public class BooleanType extends AbstractSchemaComplexProperty {
     public static SchemaTypeMapper<Map<String, Object>> mapper() {
         return (specVersion, name, value, propertyFactory) -> {
             Map<String, SchemaProperty> properties = new HashMap<>();
-            properties.put("boolean",
-                    propertyFactory.createProperty(SchemaPropertyContext.Type.BOOLEAN, "boolean", true));
             for (Map.Entry<String, Object> object : value.entrySet()) {
                 properties.put(object.getKey(),
                         propertyFactory.createProperty(SchemaPropertyContext.Type.BOOLEAN, object.getKey(),

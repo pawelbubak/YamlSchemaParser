@@ -1,11 +1,16 @@
 package org.yaml.schema.parser.api.validator;
 
-import org.yaml.schema.parser.api.schema.Schema;
-
-import java.util.Map;
+import org.yaml.schema.parser.api.validator.context.ValidationContext;
+import org.yaml.schema.parser.api.validator.problem.Problem;
 
 public interface YamlValidator {
 
-    void validate(Schema schema, Map<String, Object> yaml);
+    void reportProblem(Problem problem);
+
+    void startElement(Object name);
+
+    void endElement();
+
+    ValidationContext getContext();
 
 }

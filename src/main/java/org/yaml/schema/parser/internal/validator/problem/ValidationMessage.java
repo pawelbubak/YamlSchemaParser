@@ -35,12 +35,29 @@ public class ValidationMessage extends AbstractMessage {
     }
 
     public enum Key implements AbstractMessage.Key {
+        /* Array validation messages */
+        MAXIMUM_ITEMS_VALIDATION_PROBLEM,
+        MINIMUM_ITEMS_VALIDATION_PROBLEM,
+        /* Boolean validation messages */
+        BOOLEAN_VALIDATION_PROBLEM,
+        /* Date validation messages */
+        DATE_VALIDATION_PROBLEM,
+        DATE_PATTERN_VALIDATION_PROBLEM,
+        MAXIMUM_DATE_VALIDATION_PROBLEM,
+        MINIMUM_DATE_VALIDATION_PROBLEM,
         /* Number validation messages */
         EXCLUSIVE_MAXIMUM_VALIDATION_PROBLEM,
         EXCLUSIVE_MINIMUM_VALIDATION_PROBLEM,
         INTEGER_VALIDATION_PROBLEM,
         MAXIMUM_VALIDATION_PROBLEM,
         MINIMUM_VALIDATION_PROBLEM,
+        /* String validation messages */
+        MAXIMUM_LENGTH_VALIDATION_PROBLEM,
+        MINIMUM_LENGTH_VALIDATION_PROBLEM,
+        STRING_PATTERN_VALIDATION_PROBLEM,
+        /* Other validation messages */
+        ENUM_VALIDATION_PROBLEM,
+        REQUIRED_VALIDATION_PROBLEM,
         /* Test messages */
         TEST_MESSAGE
     }
@@ -56,12 +73,16 @@ public class ValidationMessage extends AbstractMessage {
         }
 
         public Builder argument(String key, Object value) {
-            this.arguments.put(key, value);
+            if (key != null) {
+                this.arguments.put(key, value);
+            }
             return this;
         }
 
         public Builder arguments(Map<String, Object> arguments) {
-            this.arguments.putAll(arguments);
+            if (arguments != null) {
+                this.arguments.putAll(arguments);
+            }
             return this;
         }
 

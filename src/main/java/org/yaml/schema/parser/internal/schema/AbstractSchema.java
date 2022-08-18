@@ -1,17 +1,23 @@
 package org.yaml.schema.parser.internal.schema;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificationException;
 import org.yaml.schema.parser.api.schema.Schema;
-import org.yaml.schema.parser.api.schema.annotation.SchemaVersion;
 import org.yaml.schema.parser.api.schema.property.SchemaProperty;
-import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
 import org.yaml.schema.parser.api.serializer.Serializer;
-import org.yaml.schema.parser.internal.schema.property.annotation.Description;
-import org.yaml.schema.parser.internal.schema.property.annotation.Title;
+import org.yaml.schema.parser.api.validator.YamlValidator;
+import org.yaml.schema.parser.api.validator.problem.ProblemHandler;
+import org.yaml.schema.parser.internal.schema.property.core.Definitions;
+import org.yaml.schema.parser.internal.schema.property.core.Properties;
+import org.yaml.schema.parser.internal.schema.property.core.annotation.Description;
+import org.yaml.schema.parser.internal.schema.property.core.annotation.Title;
+import org.yaml.schema.parser.internal.utils.SchemaPropertyNameDesignator;
+import org.yaml.schema.parser.internal.validator.DefaultYamlValidator;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Stream;
 
 import static org.yaml.schema.parser.internal.schema.validation.SchemaPropertyValidationUtils.requireNonNull;
 
@@ -19,6 +25,7 @@ public abstract class AbstractSchema extends AbstractMap<String, SchemaProperty>
     /**
      * The version of schema specification.
      */
+    @Getter(AccessLevel.PROTECTED)
     private final SpecVersion specVersion;
     /**
      * The properties of this schema.
@@ -32,30 +39,56 @@ public abstract class AbstractSchema extends AbstractMap<String, SchemaProperty>
 
     @Override
     public String title() {
-        String titlePropertyName = getPropertyName(Title.class);
-        if (!containsProperty(titlePropertyName)) {
-            return null;
+        try {
+            String propertyName = SchemaPropertyNameDesignator.designatePropertyName(Title.class, specVersion);
+            if (!containsProperty(propertyName)) {
+                return null;
+            }
+            Title title = (Title) getProperty(propertyName);
+            return title.value();
+        } catch (SchemaPropertyNotExistsInSpecificationException e) {
+            throw new RuntimeException(e);
         }
-        Title title = (Title) getProperty(titlePropertyName);
-        return title.value();
     }
 
     @Override
     public String description() {
-        String descriptionPropertyName = getPropertyName(Description.class);
-        if (!containsProperty(descriptionPropertyName)) {
-            return null;
+        try {
+            String propertyName = SchemaPropertyNameDesignator.designatePropertyName(Description.class, specVersion);
+            if (!containsProperty(propertyName)) {
+                return null;
+            }
+            Description description = (Description) getProperty(propertyName);
+            return description.value();
+        } catch (SchemaPropertyNotExistsInSpecificationException e) {
+            throw new RuntimeException(e);
         }
-        Description description = (Description) getProperty(descriptionPropertyName);
-        return description.value();
     }
 
     @Override
-    public Stream<Schema> getSubschemas() {
-        return schemaProperties.values()
-                .stream()
-                .filter(SchemaProperty::hasSubschemas)
-                .flatMap(SchemaProperty::getSubschemas);
+    public Definitions definitions() {
+        try {
+            String propertyName = SchemaPropertyNameDesignator.designatePropertyName(Definitions.class, specVersion);
+            if (!containsProperty(propertyName)) {
+                return null;
+            }
+            return (Definitions) schemaProperties.get(propertyName);
+        } catch (SchemaPropertyNotExistsInSpecificationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Properties properties() {
+        try {
+            String propertyName = SchemaPropertyNameDesignator.designatePropertyName(Properties.class, specVersion);
+            if (!containsProperty(propertyName)) {
+                return null;
+            }
+            return (Properties) schemaProperties.get(propertyName);
+        } catch (SchemaPropertyNotExistsInSpecificationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -67,17 +100,18 @@ public abstract class AbstractSchema extends AbstractMap<String, SchemaProperty>
     public void serialize(Serializer serializer) throws IOException {
         List<SchemaProperty> sortedProperties = getPropertiesSortedBySequenceNumberAndName();
         for (SchemaProperty property : sortedProperties) {
-            property.serialize(serializer, null);
+            property.serialize(serializer);
         }
     }
 
-    protected String getPropertyName(Class<?> clazz) {
-        for (SchemaVersion schemaVersion : clazz.getAnnotationsByType(SchemaVersion.class)) {
-            if (specVersion.equals(schemaVersion.value()) && !schemaVersion.name().isBlank()) {
-                return schemaVersion.name();
-            }
-        }
-        return clazz.getAnnotation(SchemaPropertyName.class).value();
+    @Override
+    public void test(ProblemHandler problemHandler, Object yaml) {
+        YamlValidator validator = new DefaultYamlValidator(problemHandler);
+        properties().test(validator, yaml);
+    }
+
+    public void test(YamlValidator validator, Object yaml) {
+        properties().test(validator, yaml);
     }
 
     protected boolean containsProperty(String propertyName) {
@@ -91,9 +125,10 @@ public abstract class AbstractSchema extends AbstractMap<String, SchemaProperty>
 
     private List<SchemaProperty> getPropertiesSortedBySequenceNumberAndName() {
         return schemaProperties.values()
-                .stream()
-                .sorted(Comparator.comparingInt(SchemaProperty::sequenceNumber).thenComparing(SchemaProperty::name))
-                .toList();
+                               .stream()
+                               .sorted(Comparator.comparingInt(SchemaProperty::sequenceNumber)
+                                                 .thenComparing(SchemaProperty::name))
+                               .toList();
     }
 
 }

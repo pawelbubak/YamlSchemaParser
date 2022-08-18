@@ -1,4 +1,4 @@
-package org.yaml.schema.parser.internal.schema.property.declaration;
+package org.yaml.schema.parser.internal.schema.property.core.declaration;
 
 import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificationException;
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyContext;

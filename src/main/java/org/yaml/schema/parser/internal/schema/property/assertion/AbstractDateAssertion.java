@@ -7,14 +7,12 @@ import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.internal.schema.property.AbstractSchemaSimpleProperty;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Map;
+import java.util.Date;
 
-public abstract class AbstractNumberAssertion extends AbstractSchemaSimpleProperty<BigDecimal>
-        implements SchemaAssertionProperty<BigDecimal> {
+public abstract class AbstractDateAssertion extends AbstractSchemaSimpleProperty<Date>
+        implements SchemaAssertionProperty<Date> {
 
-    public AbstractNumberAssertion(SpecVersion specVersion, BigDecimal value)
+    public AbstractDateAssertion(SpecVersion specVersion, Date value)
             throws SchemaPropertyNotExistsInSpecificationException {
         super(specVersion, value);
     }
@@ -22,11 +20,6 @@ public abstract class AbstractNumberAssertion extends AbstractSchemaSimpleProper
     @Override
     protected void serializeValue(Serializer serializer) throws IOException {
         serializer.writePropertyValue(value());
-    }
-
-    @Override
-    protected Map<String, Object> getProblemMessageArguments() {
-        return Collections.singletonMap("limit", value());
     }
 
 }

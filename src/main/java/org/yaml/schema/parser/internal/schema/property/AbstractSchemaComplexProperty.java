@@ -3,9 +3,12 @@ package org.yaml.schema.parser.internal.schema.property;
 import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificationException;
 import org.yaml.schema.parser.api.schema.property.SchemaComplexProperty;
 import org.yaml.schema.parser.api.schema.property.SchemaProperty;
+import org.yaml.schema.parser.api.schema.property.SchemaSimpleProperty;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
-import org.yaml.schema.parser.api.serializer.SerializationContext;
 import org.yaml.schema.parser.api.serializer.Serializer;
+import org.yaml.schema.parser.api.validator.YamlValidator;
+import org.yaml.schema.parser.internal.schema.property.core.Sequence;
+import org.yaml.schema.parser.internal.utils.SchemaPropertyNameDesignator;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -48,25 +51,55 @@ public abstract class AbstractSchemaComplexProperty extends AbstractSchemaProper
     }
 
     @Override
-    public void serialize(Serializer serializer, SerializationContext serializationContext) throws IOException {
-        serializer.startComplexProperty(name());
-        serializeProperties(serializer, serializationContext);
-        serializer.endComplexElement();
-    }
-
-    protected void serializeProperties(Serializer serializer, SerializationContext serializationContext)
-            throws IOException {
-        List<SchemaProperty> sortedProperties = getPropertiesSortedBySequenceNumberAndName();
-        for (SchemaProperty property : sortedProperties) {
-            property.serialize(serializer, serializationContext);
+    public int sequenceNumber() {
+        try {
+            String propertyName = SchemaPropertyNameDesignator.designatePropertyName(Sequence.class,
+                    getUsedSpecVersion());
+            SchemaProperty schemaProperty = properties.get(propertyName);
+            if (schemaProperty instanceof SchemaSimpleProperty<?> sequenceProperty) {
+                Object sequenceValue = sequenceProperty.value();
+                if (sequenceValue instanceof Number) {
+                    return ((Number) sequenceValue).intValue();
+                }
+            }
+            return super.sequenceNumber();
+        } catch (SchemaPropertyNotExistsInSpecificationException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private List<SchemaProperty> getPropertiesSortedBySequenceNumberAndName() {
+    @Override
+    public void serialize(Serializer serializer) throws IOException {
+        serializer.startComplexProperty(name());
+        serializeProperties(serializer);
+        serializer.endComplexElement();
+    }
+
+    @Override
+    public void test(YamlValidator validator, Object value) {
+        if (value instanceof Map<?, ?>) {
+            for (SchemaProperty property : getPropertiesSortedBySequenceNumberAndName()) {
+                validator.getContext().push(property.name());
+                Object propertyValue = ((Map<?, ?>) value).get(property.name());
+                property.test(validator, propertyValue);
+                validator.getContext().pop();
+            }
+        }
+    }
+
+    protected void serializeProperties(Serializer serializer) throws IOException {
+        List<SchemaProperty> sortedProperties = getPropertiesSortedBySequenceNumberAndName();
+        for (SchemaProperty property : sortedProperties) {
+            property.serialize(serializer);
+        }
+    }
+
+    protected List<SchemaProperty> getPropertiesSortedBySequenceNumberAndName() {
         return properties.values()
-                .stream()
-                .sorted(Comparator.comparingInt(SchemaProperty::sequenceNumber).thenComparing(SchemaProperty::name))
-                .toList();
+                         .stream()
+                         .sorted(Comparator.comparingInt(SchemaProperty::sequenceNumber)
+                                           .thenComparing(SchemaProperty::name))
+                         .toList();
     }
 
 }

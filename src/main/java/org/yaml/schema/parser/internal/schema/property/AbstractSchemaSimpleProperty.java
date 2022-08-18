@@ -3,10 +3,12 @@ package org.yaml.schema.parser.internal.schema.property;
 import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificationException;
 import org.yaml.schema.parser.api.schema.property.SchemaSimpleProperty;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
-import org.yaml.schema.parser.api.serializer.SerializationContext;
 import org.yaml.schema.parser.api.serializer.Serializer;
+import org.yaml.schema.parser.api.validator.YamlValidator;
 import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
 import org.yaml.schema.parser.api.validator.problem.Message;
+import org.yaml.schema.parser.api.validator.problem.Problem;
+import org.yaml.schema.parser.internal.validator.problem.DefaultProblem;
 import org.yaml.schema.parser.internal.validator.problem.ValidationMessage;
 
 import java.io.IOException;
@@ -31,19 +33,25 @@ public abstract class AbstractSchemaSimpleProperty<T> extends AbstractSchemaProp
     }
 
     @Override
-    public boolean testValue(Object rawValue) {
-        return false;
-    }
-
-    @Override
-    public void serialize(Serializer serializer, SerializationContext serializationContext) throws IOException {
+    public void serialize(Serializer serializer) throws IOException {
         serializer.startSimpleElement(name());
-        serializeValue(serializer, serializationContext);
+        serializeValue(serializer);
         serializer.endSimpleElement();
     }
 
-    protected abstract void serializeValue(Serializer serializer, SerializationContext serializationContext)
-            throws IOException;
+    protected abstract void serializeValue(Serializer serializer) throws IOException;
+
+    @Override
+    public void test(YamlValidator validator, Object value) {
+        if (!testValue(value)) {
+            Problem problem =
+                    DefaultProblem.builder()
+                                  .pointer(validator.getContext().getPointer())
+                                  .message(getProblemMessage())
+                                  .build();
+            validator.reportProblem(problem);
+        }
+    }
 
     protected Message getProblemMessage() {
         return ValidationMessage.builder()
@@ -52,16 +60,8 @@ public abstract class AbstractSchemaSimpleProperty<T> extends AbstractSchemaProp
                                 .build();
     }
 
-//    protected abstract AbstractMessage.Key getProblemMessageCode();
-//
-//    protected abstract Map<String, Object> getProblemMessageArguments();
+    protected abstract AbstractMessage.Key getProblemMessageCode();
 
-    protected AbstractMessage.Key getProblemMessageCode() {
-        return null;
-    }
-
-    protected Map<String, Object> getProblemMessageArguments() {
-        return null;
-    }
+    protected abstract Map<String, Object> getProblemMessageArguments();
 
 }
