@@ -12,7 +12,7 @@ import org.yaml.schema.parser.internal.validator.problem.ValidationMessage;
 
 import java.math.BigDecimal;
 
-import static org.yaml.schema.parser.internal.schema.property.assertion.MapperUtils.mapToBigDecimal;
+import static org.yaml.schema.parser.internal.schema.property.assertion.utils.MapperUtils.mapToBigDecimal;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.NUMBER)
 @SchemaPropertyName("exclusiveMin")

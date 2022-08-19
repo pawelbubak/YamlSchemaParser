@@ -17,7 +17,12 @@ public class DefaultValidationContext implements ValidationContext {
     private final Stack<String> stack = new Stack<>();
 
     @Override
-    public String getPointer() {
+    public String current() {
+        return stack.peek();
+    }
+
+    @Override
+    public String pointer() {
         return "/" + String.join("/", stack);
     }
 

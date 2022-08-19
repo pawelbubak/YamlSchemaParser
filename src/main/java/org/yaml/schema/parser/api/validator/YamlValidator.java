@@ -1,6 +1,5 @@
 package org.yaml.schema.parser.api.validator;
 
-import org.yaml.schema.parser.api.validator.context.ValidationContext;
 import org.yaml.schema.parser.api.validator.problem.Problem;
 
 public interface YamlValidator {
@@ -11,6 +10,8 @@ public interface YamlValidator {
 
     void endElement();
 
-    ValidationContext getContext();
+    String getContext();
+
+    String getPointer();
 
 }

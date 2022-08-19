@@ -3,6 +3,7 @@ package org.yaml.schema.parser.api.serializer;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public interface Serializer {
 
@@ -25,6 +26,8 @@ public interface Serializer {
     void writePropertyValue(Long value) throws IOException;
 
     void writePropertyValue(String value) throws IOException;
+
+    void writePropertyValue(List<?> value) throws IOException;
 
     void endComplexElement() throws IOException;
 

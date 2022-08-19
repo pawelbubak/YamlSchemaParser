@@ -11,6 +11,10 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.yaml.schema.parser.internal.schema.property.assertion.utils.MapperUtils.mapToBigDecimal;
 
 @AllArgsConstructor
 public class SerializerImpl implements Serializer {
@@ -103,6 +107,34 @@ public class SerializerImpl implements Serializer {
     public void writePropertyValue(String value) throws IOException {
         outputStream.write(SerializationConfiguration.SPACE.getBytes(serializationConfiguration.getCharset()));
         outputStream.write(value.getBytes(serializationConfiguration.getCharset()));
+    }
+
+    @Override
+    public void writePropertyValue(List<?> rawValues) throws IOException {
+        String values = rawValues.stream().map(value -> {
+            if (value instanceof Date) {
+                return serializationConfiguration.getDateFormatter().format(value);
+            } else if (value instanceof Number) {
+                BigDecimal numberValue = mapToBigDecimal(value);
+                boolean isInteger = numberValue.signum() == 0 || numberValue.scale() <= 0 ||
+                        numberValue.stripTrailingZeros().scale() <= 0;
+                NumberFormat formatter = isInteger
+                        ? serializationConfiguration.getIntegerFormatter()
+                        : serializationConfiguration.getDecimalFormatter();
+                return formatter.format(numberValue);
+            } else if (value instanceof String) {
+                return (String) value;
+            } else {
+                return String.valueOf(value);
+            }
+        }).collect(Collectors.joining(SerializationConfiguration.COMMA + SerializationConfiguration.SPACE));
+        outputStream.write(SerializationConfiguration.SPACE.getBytes(serializationConfiguration.getCharset()));
+        outputStream.write(
+                SerializationConfiguration.ARRAY_START_SIGN.getBytes(serializationConfiguration.getCharset()));
+        outputStream.write(SerializationConfiguration.SPACE.getBytes(serializationConfiguration.getCharset()));
+        outputStream.write(values.getBytes(serializationConfiguration.getCharset()));
+        outputStream.write(SerializationConfiguration.SPACE.getBytes(serializationConfiguration.getCharset()));
+        outputStream.write(SerializationConfiguration.ARRAY_END_SIGN.getBytes(serializationConfiguration.getCharset()));
     }
 
     @Override

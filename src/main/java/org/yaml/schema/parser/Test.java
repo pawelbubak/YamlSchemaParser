@@ -21,8 +21,8 @@ public class Test {
     }
 
     private static void test() throws Exception {
-        String rawSchema = getWorkerSchema();
-        String rawYaml = getWorkerYaml();
+        String rawSchema = getWorkersSchema();
+        String rawYaml = getWorkersYaml();
         Object yaml = getYaml(rawYaml);
 
         try (InputStream inputStream = new ByteArrayInputStream(rawSchema.getBytes(StandardCharsets.UTF_8));
@@ -181,6 +181,215 @@ public class Test {
                   - 132197
                   - 132260
                   - 132348
+                """;
+    }
+
+    private static String getWorkersSchema() {
+        return """
+                $schema:
+                  id: "https://example.com/schemas/workers.yaml"
+                  version: "1.0"
+                                
+                title: Workers schema
+                description: Example workers schema
+                                
+                definitions:
+                  worker: &worker
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        required: true
+                        seq: 1
+                        exclusiveMin: 0
+                      nazwisko:
+                        type: string
+                        required: true
+                        seq: 2
+                      etat:
+                        type: string
+                        required: true
+                        seq: 3
+                        enum: [ADIUNKT, ASYSTENT, DYREKTOR, PROFESOR, SEKRETARKA, STAZYSTA]
+                      idSzefa:
+                        type: integer
+                        seq: 4
+                      zatrudniony:
+                        type: date
+                        seq: 5
+                      placaPodstawowa:
+                        type: number
+                        seq: 6
+                        exclusiveMin: 0
+                      placaDodatkowa:
+                        type: number
+                        seq: 7
+                        min: 0
+                      idZespolu:
+                        type: integer
+                        required: true
+                        seq: 8
+                        enum: [ 10, 20, 30, 40, 50 ]
+                  zespol: &zespol
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        required: true
+                        seq: 1
+                        exclusiveMin: 0
+                      nazwa:
+                        type: string
+                        required: true
+                        seq: 2
+                      adres:
+                        type: string
+                        required: true
+                        seq: 3
+
+                properties:
+                  pracownicy:
+                    type: array
+                    required: true
+                    itemsType: *worker
+                  zespoly:
+                    type: array
+                    required: true
+                    itemsType: *zespol
+                """;
+    }
+
+    private static String getWorkersYaml() {
+        return """
+                pracownicy:
+                  - id: 100
+                    nazwisko: WEGLARZ
+                    etat: DYREKTOR
+                    idSzefa: null
+                    zatrudniony: 1968-01-01
+                    placaPodstawowa: 1730.00
+                    placaDodatkowa: 420.50
+                    idZespolu: 10
+                  - id: 110
+                    nazwisko: BLAZEWICZ
+                    etat: PROFESOR
+                    idSzefa: 100
+                    zatrudniony: 1973-05-01
+                    placaPodstawowa: 1350.00
+                    placaDodatkowa: 210.00
+                    idZespolu: 40
+                  - id: 120
+                    nazwisko: SLOWINSKI
+                    etat: PROFESOR
+                    idSzefa: 100
+                    zatrudniony: 1977-09-01
+                    placaPodstawowa: 1070.00
+                    placaDodatkowa: null
+                    idZespolu: 30
+                  - id: 130
+                    nazwisko: BRZEZINSKI
+                    etat: PROFESOR
+                    idSzefa: 100
+                    zatrudniony: 1968-07-01
+                    placaPodstawowa: 960.00
+                    placaDodatkowa: null
+                    idZespolu: 20
+                  - id: 140
+                    nazwisko: MORZY
+                    etat: PROFESOR
+                    idSzefa: 130
+                    zatrudniony: 1975-09-15
+                    placaPodstawowa: 830.00
+                    placaDodatkowa: 105.00
+                    idZespolu: 20
+                  - id: 150
+                    nazwisko: KROLIKOWSKI
+                    etat: ADIUNKT
+                    idSzefa: 130
+                    zatrudniony: 1977-09-01
+                    placaPodstawowa: 645.50
+                    placaDodatkowa: null
+                    idZespolu: 20
+                  - id: 160
+                    nazwisko: KOSZLAJDA
+                    etat: ADIUNKT
+                    idSzefa: 130
+                    zatrudniony: 1985-03-01
+                    placaPodstawowa: 590.00
+                    placaDodatkowa: null
+                    idZespolu: 20
+                  - id: 170
+                    nazwisko: JEZIERSKI
+                    etat: ASYSTENT
+                    idSzefa: 130
+                    zatrudniony: 1992-10-01
+                    placaPodstawowa: 439.70
+                    placaDodatkowa: 80.50
+                    idZespolu: 20
+                  - id: 190
+                    nazwisko: MATYSIAK
+                    etat: ASYSTENT
+                    idSzefa: 140
+                    zatrudniony: 1993-09-01
+                    placaPodstawowa: 371.00
+                    placaDodatkowa: null
+                    idZespolu: 20
+                  - id: 180
+                    nazwisko: MAREK
+                    etat: SEKRETARKA
+                    idSzefa: 100
+                    zatrudniony: 1985-02-20
+                    placaPodstawowa: 410.20
+                    placaDodatkowa: null
+                    idZespolu: 10
+                  - id: 200
+                    nazwisko: ZAKRZEWICZ
+                    etat: STAZYSTA
+                    idSzefa: 140
+                    zatrudniony: 1994-07-15
+                    placaPodstawowa:  208.00
+                    placaDodatkowa: null
+                    idZespolu: 30
+                  - id: 210
+                    nazwisko: BIALY
+                    etat: STAZYSTA
+                    idSzefa: 130
+                    zatrudniony: 1993-10-15
+                    placaPodstawowa: 250.00
+                    placaDodatkowa: 170.60
+                    idZespolu: 30
+                  - id: 220
+                    nazwisko: KONOPKA
+                    etat: ASYSTENT
+                    idSzefa: 110
+                    zatrudniony: 1993-10-01
+                    placaPodstawowa:  480.00
+                    placaDodatkowa: null
+                    idZespolu: 20
+                  - id: 230
+                    nazwisko: HAPKE
+                    etat: ASYSTENT
+                    idSzefa: 120
+                    zatrudniony: 1992-09-01
+                    placaPodstawowa:  480.00
+                    placaDodatkowa: 90.00
+                    idZespolu: 30
+                zespoly:
+                  - id: 10
+                    nazwa: ADMINISTRACJA
+                    adres: PIOTROWO 3A
+                  - id: 20
+                    nazwa: SYSTEMY ROZPROSZONE
+                    adres: PIOTROWO 3A
+                  - id: 30
+                    nazwa: SYSTEMY EKSPERCKIE
+                    adres: STRZELECKA 14
+                  - id: 40
+                    nazwa: ALGORYTMY
+                    adres: WLODKOWICA 16
+                  - id: 50
+                    nazwa: BADANIA OPERACYJNE
+                    adres: MIELZYNSKIEGO 30
                 """;
     }
 

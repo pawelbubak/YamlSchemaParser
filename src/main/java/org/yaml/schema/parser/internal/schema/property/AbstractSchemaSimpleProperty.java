@@ -46,7 +46,7 @@ public abstract class AbstractSchemaSimpleProperty<T> extends AbstractSchemaProp
         if (!testValue(value)) {
             Problem problem =
                     DefaultProblem.builder()
-                                  .pointer(validator.getContext().getPointer())
+                                  .pointer(validator.getPointer())
                                   .message(getProblemMessage())
                                   .build();
             validator.reportProblem(problem);

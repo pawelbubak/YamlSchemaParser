@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import static org.yaml.schema.parser.internal.schema.property.assertion.MapperUtils.mapToBigDecimal;
+import static org.yaml.schema.parser.internal.schema.property.assertion.utils.MapperUtils.mapToBigDecimal;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.NUMBER)
 @SchemaPropertyName("const")

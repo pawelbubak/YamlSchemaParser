@@ -5,7 +5,9 @@ import java.util.Date;
 
 public interface ValidationContext {
 
-    String getPointer();
+    String current();
+
+    String pointer();
 
     void push(BigDecimal value);
 

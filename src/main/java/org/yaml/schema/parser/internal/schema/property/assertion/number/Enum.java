@@ -9,7 +9,7 @@ import org.yaml.schema.parser.api.schema.version.SpecVersion;
 import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
 import org.yaml.schema.parser.internal.schema.property.AbstractSchemaSimpleProperty;
-import org.yaml.schema.parser.internal.schema.property.assertion.MapperUtils;
+import org.yaml.schema.parser.internal.schema.property.assertion.utils.MapperUtils;
 import org.yaml.schema.parser.internal.validator.problem.ValidationMessage;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.yaml.schema.parser.internal.schema.property.assertion.MapperUtils.mapToBigDecimal;
+import static org.yaml.schema.parser.internal.schema.property.assertion.utils.MapperUtils.mapToBigDecimal;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.NUMBER)
 @SchemaPropertyName("enum")
@@ -47,7 +47,7 @@ public class Enum extends AbstractSchemaSimpleProperty<List<BigDecimal>> {
 
     @Override
     protected void serializeValue(Serializer serializer) throws IOException {
-        serializer.writePropertyValue(value().toString());
+        serializer.writePropertyValue(value());
     }
 
     @Override

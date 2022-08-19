@@ -79,10 +79,10 @@ public abstract class AbstractSchemaComplexProperty extends AbstractSchemaProper
     public void test(YamlValidator validator, Object value) {
         if (value instanceof Map<?, ?>) {
             for (SchemaProperty property : getPropertiesSortedBySequenceNumberAndName()) {
-                validator.getContext().push(property.name());
+                validator.startElement(property.name());
                 Object propertyValue = ((Map<?, ?>) value).get(property.name());
                 property.test(validator, propertyValue);
-                validator.getContext().pop();
+                validator.endElement();
             }
         }
     }

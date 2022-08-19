@@ -54,8 +54,13 @@ public class DefaultYamlValidator implements YamlValidator {
     }
 
     @Override
-    public ValidationContext getContext() {
-        return context;
+    public String getContext() {
+        return context.current();
+    }
+
+    @Override
+    public String getPointer() {
+        return context.pointer();
     }
 
 }

@@ -1,4 +1,4 @@
-package org.yaml.schema.parser.internal.schema.property.assertion;
+package org.yaml.schema.parser.internal.schema.property.assertion.utils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

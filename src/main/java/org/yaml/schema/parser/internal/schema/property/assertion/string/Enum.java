@@ -33,7 +33,7 @@ public class Enum extends AbstractSchemaSimpleProperty<List<String>> {
 
     @Override
     protected void serializeValue(Serializer serializer) throws IOException {
-        serializer.writePropertyValue(value().toString());
+        serializer.writePropertyValue(value());
     }
 
     @Override

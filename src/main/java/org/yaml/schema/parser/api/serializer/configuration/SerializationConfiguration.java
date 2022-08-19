@@ -8,6 +8,9 @@ public interface SerializationConfiguration {
     String TAB = "\t";
     String COLON = ":";
     String SPACE = " ";
+    String COMMA = ",";
+    String ARRAY_START_SIGN = "[";
+    String ARRAY_END_SIGN = "]";
     String LINE_TERMINATION = "\n";
 
     Charset getCharset();

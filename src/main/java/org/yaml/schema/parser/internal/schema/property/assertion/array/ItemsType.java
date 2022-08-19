@@ -48,10 +48,10 @@ public class ItemsType extends AbstractSchemaPropertyAssertion {
     public void test(YamlValidator validator, Object rawValue) {
         if (rawValue instanceof List<?> values) {
             for (int i = 0; i < values.size(); i++) {
-                validator.getContext().push(i);
+                validator.startElement(i);
                 Object value = values.get(i);
                 value().test(validator, value);
-                validator.getContext().pop();
+                validator.endElement();
             }
         }
     }

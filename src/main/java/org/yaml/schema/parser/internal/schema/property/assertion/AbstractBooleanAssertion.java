@@ -7,6 +7,7 @@ import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.internal.schema.property.AbstractSchemaSimpleProperty;
 
 import java.io.IOException;
+import java.util.Map;
 
 public abstract class AbstractBooleanAssertion extends AbstractSchemaSimpleProperty<Boolean>
         implements SchemaAssertionProperty<Boolean> {
@@ -19,6 +20,11 @@ public abstract class AbstractBooleanAssertion extends AbstractSchemaSimplePrope
     @Override
     protected void serializeValue(Serializer serializer) throws IOException {
         serializer.writePropertyValue(value());
+    }
+
+    @Override
+    protected Map<String, Object> getProblemMessageArguments() {
+        return null;
     }
 
 }

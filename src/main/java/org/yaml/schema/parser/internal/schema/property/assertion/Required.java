@@ -7,11 +7,15 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
 import org.yaml.schema.parser.api.serializer.Serializer;
+import org.yaml.schema.parser.api.validator.YamlValidator;
 import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
+import org.yaml.schema.parser.api.validator.problem.Message;
+import org.yaml.schema.parser.api.validator.problem.Problem;
+import org.yaml.schema.parser.internal.validator.problem.DefaultProblem;
 import org.yaml.schema.parser.internal.validator.problem.ValidationMessage;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.Collections;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.DEFAULT)
 @SchemaPropertyName("required")
@@ -41,6 +45,17 @@ public class Required extends AbstractBooleanAssertion {
     }
 
     @Override
+    public void test(YamlValidator validator, Object value) {
+        if (!testValue(value)) {
+            Problem problem = DefaultProblem.builder()
+                                            .pointer(validator.getPointer())
+                                            .message(getProblemMessage(validator.getContext()))
+                                            .build();
+            validator.reportProblem(problem);
+        }
+    }
+
+    @Override
     public boolean testValue(Object value) {
         return value != null;
     }
@@ -50,9 +65,11 @@ public class Required extends AbstractBooleanAssertion {
         return ValidationMessage.Key.REQUIRED_VALIDATION_PROBLEM;
     }
 
-    @Override
-    protected Map<String, Object> getProblemMessageArguments() {
-        return null;
+    protected Message getProblemMessage(String context) {
+        return ValidationMessage.builder()
+                                .bundleKey(getProblemMessageCode())
+                                .arguments(Collections.singletonMap("element", context))
+                                .build();
     }
 
 }
