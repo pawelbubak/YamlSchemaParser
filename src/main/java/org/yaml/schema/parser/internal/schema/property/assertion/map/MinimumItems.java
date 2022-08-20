@@ -1,4 +1,4 @@
-package org.yaml.schema.parser.internal.schema.property.assertion.number;
+package org.yaml.schema.parser.internal.schema.property.assertion.map;
 
 import org.yaml.schema.parser.api.exception.SchemaPropertyNotExistsInSpecificationException;
 import org.yaml.schema.parser.api.schema.annotation.SchemaVersion;
@@ -8,41 +8,42 @@ import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
 import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
 import org.yaml.schema.parser.internal.schema.property.assertion.AbstractNumberAssertion;
-import org.yaml.schema.parser.internal.validator.problem.ValidationMessage;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import static org.yaml.schema.parser.internal.schema.property.assertion.utils.MapperUtils.mapToBigDecimal;
 
-@SchemaPropertyContext(SchemaPropertyContext.Type.NUMBER)
-@SchemaPropertyName("maximum")
+@SchemaPropertyContext(SchemaPropertyContext.Type.MAP)
+@SchemaPropertyName("minimumItems")
 @SchemaVersion(SpecVersion.DRAFT_01)
-public class Maximum extends AbstractNumberAssertion {
+public class MinimumItems extends AbstractNumberAssertion {
 
-    public Maximum(BigDecimal value) throws SchemaPropertyNotExistsInSpecificationException {
+    public MinimumItems(BigDecimal value) throws SchemaPropertyNotExistsInSpecificationException {
         this(SpecVersion.current(), value);
     }
 
-    public Maximum(SpecVersion specVersion, BigDecimal value) throws SchemaPropertyNotExistsInSpecificationException {
+    public MinimumItems(SpecVersion specVersion, BigDecimal value)
+            throws SchemaPropertyNotExistsInSpecificationException {
         super(specVersion, value);
     }
 
     public static SchemaPropertyMapper<Number> mapper() {
-        return (specVersion, value, propertyFactory) -> new Maximum(specVersion, mapToBigDecimal(value));
+        return (specVersion, value, propertyFactory) -> new MinimumItems(specVersion, mapToBigDecimal(value));
     }
 
     @Override
     public boolean testValue(Object rawValue) {
-        if (rawValue != null) {
-            BigDecimal value = mapToBigDecimal(rawValue);
-            return value.compareTo(value()) <= 0;
+        if (rawValue instanceof Map<?, ?> values) {
+            BigDecimal mapSize = mapToBigDecimal(values.size());
+            return mapSize.compareTo(value()) >= 0;
         }
         return false;
     }
 
     @Override
     protected AbstractMessage.Key getProblemMessageCode() {
-        return ValidationMessage.Key.MAXIMUM_VALIDATION_PROBLEM;
+        return null;
     }
 
 }

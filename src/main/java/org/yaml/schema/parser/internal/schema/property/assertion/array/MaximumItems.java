@@ -10,11 +10,12 @@ import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
 import org.yaml.schema.parser.internal.schema.property.assertion.AbstractNumberAssertion;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import static org.yaml.schema.parser.internal.schema.property.assertion.utils.MapperUtils.mapToBigDecimal;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.ARRAY)
-@SchemaPropertyName("maxItems")
+@SchemaPropertyName("maximumItems")
 @SchemaVersion(SpecVersion.DRAFT_01)
 public class MaximumItems extends AbstractNumberAssertion {
 
@@ -22,7 +23,8 @@ public class MaximumItems extends AbstractNumberAssertion {
         this(SpecVersion.current(), value);
     }
 
-    public MaximumItems(SpecVersion specVersion, BigDecimal value) throws SchemaPropertyNotExistsInSpecificationException {
+    public MaximumItems(SpecVersion specVersion, BigDecimal value)
+            throws SchemaPropertyNotExistsInSpecificationException {
         super(specVersion, value);
     }
 
@@ -31,8 +33,12 @@ public class MaximumItems extends AbstractNumberAssertion {
     }
 
     @Override
-    public boolean testValue(Object value) {
-        return false;
+    public boolean testValue(Object rawValue) {
+        if (rawValue instanceof Map<?, ?> values) {
+            BigDecimal mapSize = mapToBigDecimal(values.size());
+            return mapSize.compareTo(value()) <= 0;
+        }
+        return true;
     }
 
     @Override

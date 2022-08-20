@@ -22,6 +22,7 @@ public class Test {
 
     private static void test() throws Exception {
         String rawSchema = getWorkersSchema();
+//        String rawSchema = getStringSchema();
         String rawYaml = getWorkersYaml();
         Object yaml = getYaml(rawYaml);
 
@@ -64,13 +65,13 @@ public class Test {
                       targets:
                         type: array
                         required: true
-                        seq: 1
+                        sequence: 1
                         itemsType:
                           type: string
                       labels:
                         type: map
                         required: false
-                        seq: 2
+                        sequence: 2
                         itemsKey:
                           type: string
                         itemsType:
@@ -80,21 +81,21 @@ public class Test {
                     properties:
                       job_id:
                         type: integer
-                        exclusiveMin: 0
+                        exclusiveMinimum: 0
                       job_name:
                         type: string
-                        minLength: 5
-                        maxLength: 20
+                        minimumLength: 5
+                        maximumLength: 20
                         pattern: "[a-zA-Z]*"
                       job_start:
                         type: date
-                        minDate: 2023-05-20T02:00:00.000+02:00
+                        minimumDate: 2022-06-20T02:00:00.000+02:00
                       scrape_interval:
                         type: string
                         enum: [ second, minute, hour ]
                       one_time_job:
                         type: boolean
-                        const: false
+                        constant: false
 
                 properties:
                   global:
@@ -129,40 +130,40 @@ public class Test {
                   id:
                     type: integer
                     required: true
-                    seq: 1
-                    exclusiveMin: 0
+                    sequence: 1
+                    exclusiveMinimum: 0
                   nazwisko:
                     type: string
                     required: true
-                    seq: 2
+                    sequence: 2
                   etat:
                     type: string
                     required: true
-                    seq: 3
+                    sequence: 3
                   idSzefa:
                     type: integer
-                    seq: 4
+                    sequence: 4
                   zatrudniony:
                     type: date
-                    seq: 5
+                    sequence: 5
                   placaPodstawowa:
                     type: number
-                    seq: 6
-                    exclusiveMin: 0
+                    sequence: 6
+                    exclusiveMinimum: 0
                   placaDodatkowa:
                     type: number
-                    seq: 7
-                    min: 0
+                    sequence: 7
+                    minimum: 0
                   idZespolu:
                     type: integer
                     required: true
-                    seq: 8
+                    sequence: 8
                     enum: [ 10, 20, 30, 40 ]
                   students:
                     type: array
                     itemsType:
                       type: integer
-                      exclusiveMin: 0
+                      exclusiveMinimum: 0
                 """;
     }
 
@@ -187,75 +188,78 @@ public class Test {
     private static String getWorkersSchema() {
         return """
                 $schema:
-                  id: "https://example.com/schemas/workers.yaml"
-                  version: "1.0"
+                  id: 'https://example.com/schemas/pracownicy.yaml'
+                  version: '1.0'
                                 
-                title: Workers schema
-                description: Example workers schema
+                title: Pracownicy
+                description: Opis dokumntu zawierajacego liste pracownikow oraz zespolow w ktorych pracuja
                                 
                 definitions:
-                  worker: &worker
+                  pracownik: &pracownik
                     type: object
                     properties:
                       id:
                         type: integer
                         required: true
-                        seq: 1
-                        exclusiveMin: 0
+                        sequence: 1
+                        exclusiveMinimum: 0
                       nazwisko:
                         type: string
                         required: true
-                        seq: 2
+                        sequence: 2
                       etat:
                         type: string
                         required: true
-                        seq: 3
+                        sequence: 3
                         enum: [ADIUNKT, ASYSTENT, DYREKTOR, PROFESOR, SEKRETARKA, STAZYSTA]
                       idSzefa:
                         type: integer
-                        seq: 4
+                        sequence: 4
                       zatrudniony:
                         type: date
-                        seq: 5
+                        sequence: 5
                       placaPodstawowa:
                         type: number
-                        seq: 6
-                        exclusiveMin: 0
+                        sequence: 6
+                        exclusiveMinimum: 0
                       placaDodatkowa:
                         type: number
-                        seq: 7
-                        min: 0
+                        sequence: 7
+                        minimum: 0
                       idZespolu:
                         type: integer
                         required: true
-                        seq: 8
-                        enum: [ 10, 20, 30, 40, 50 ]
+                        sequence: 8
+                        enum: [10, 20, 30, 40, 50]
                   zespol: &zespol
                     type: object
                     properties:
                       id:
                         type: integer
                         required: true
-                        seq: 1
-                        exclusiveMin: 0
+                        sequence: 1
+                        exclusiveMinimum: 0
                       nazwa:
                         type: string
                         required: true
-                        seq: 2
+                        sequence: 2
                       adres:
                         type: string
                         required: true
-                        seq: 3
-
+                        sequence: 3
+                                
                 properties:
                   pracownicy:
                     type: array
                     required: true
-                    itemsType: *worker
+                    itemsType: *pracownik
                   zespoly:
-                    type: array
+                    type: map
                     required: true
+                    itemsKey:
+                      type: number
                     itemsType: *zespol
+                                
                 """;
     }
 
@@ -289,8 +293,8 @@ public class Test {
                   - id: 130
                     nazwisko: BRZEZINSKI
                     etat: PROFESOR
-                    idSzefa: 100
                     zatrudniony: 1968-07-01
+                    idSzefa: 100
                     placaPodstawowa: 960.00
                     placaDodatkowa: null
                     idZespolu: 20
@@ -347,7 +351,7 @@ public class Test {
                     etat: STAZYSTA
                     idSzefa: 140
                     zatrudniony: 1994-07-15
-                    placaPodstawowa:  208.00
+                    placaPodstawowa: 208.00
                     placaDodatkowa: null
                     idZespolu: 30
                   - id: 210
@@ -363,7 +367,7 @@ public class Test {
                     etat: ASYSTENT
                     idSzefa: 110
                     zatrudniony: 1993-10-01
-                    placaPodstawowa:  480.00
+                    placaPodstawowa: 480.00
                     placaDodatkowa: null
                     idZespolu: 20
                   - id: 230
@@ -371,23 +375,28 @@ public class Test {
                     etat: ASYSTENT
                     idSzefa: 120
                     zatrudniony: 1992-09-01
-                    placaPodstawowa:  480.00
+                    placaPodstawowa: 480.00
                     placaDodatkowa: 90.00
                     idZespolu: 30
                 zespoly:
-                  - id: 10
+                  10:
+                    id: 10
                     nazwa: ADMINISTRACJA
                     adres: PIOTROWO 3A
-                  - id: 20
+                  20:
+                    id: 20
                     nazwa: SYSTEMY ROZPROSZONE
                     adres: PIOTROWO 3A
-                  - id: 30
+                  30:
+                    id: 30
                     nazwa: SYSTEMY EKSPERCKIE
                     adres: STRZELECKA 14
-                  - id: 40
+                  40:
+                    id: 40
                     nazwa: ALGORYTMY
                     adres: WLODKOWICA 16
-                  - id: 50
+                  50:
+                    id: 50
                     nazwa: BADANIA OPERACYJNE
                     adres: MIELZYNSKIEGO 30
                 """;

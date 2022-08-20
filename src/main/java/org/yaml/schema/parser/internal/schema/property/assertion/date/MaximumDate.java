@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.Map;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.DATE)
-@SchemaPropertyName("maxDate")
+@SchemaPropertyName("maximumDate")
 @SchemaVersion(SpecVersion.DRAFT_01)
 public class MaximumDate extends AbstractDateAssertion {
 

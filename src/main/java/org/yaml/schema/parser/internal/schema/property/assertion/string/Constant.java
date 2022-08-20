@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.STRING)
-@SchemaPropertyName("const")
+@SchemaPropertyName("constant")
 @SchemaVersion(SpecVersion.DRAFT_01)
 public class Constant extends AbstractStringAssertion {
 

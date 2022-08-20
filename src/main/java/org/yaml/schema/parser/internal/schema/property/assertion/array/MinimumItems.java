@@ -10,11 +10,12 @@ import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
 import org.yaml.schema.parser.internal.schema.property.assertion.AbstractNumberAssertion;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import static org.yaml.schema.parser.internal.schema.property.assertion.utils.MapperUtils.mapToBigDecimal;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.ARRAY)
-@SchemaPropertyName("minItems")
+@SchemaPropertyName("minimumItems")
 @SchemaVersion(SpecVersion.DRAFT_01)
 public class MinimumItems extends AbstractNumberAssertion {
 
@@ -22,7 +23,8 @@ public class MinimumItems extends AbstractNumberAssertion {
         this(SpecVersion.current(), value);
     }
 
-    public MinimumItems(SpecVersion specVersion, BigDecimal value) throws SchemaPropertyNotExistsInSpecificationException {
+    public MinimumItems(SpecVersion specVersion, BigDecimal value)
+            throws SchemaPropertyNotExistsInSpecificationException {
         super(specVersion, value);
     }
 
@@ -31,7 +33,11 @@ public class MinimumItems extends AbstractNumberAssertion {
     }
 
     @Override
-    public boolean testValue(Object value) {
+    public boolean testValue(Object rawValue) {
+        if (rawValue instanceof Map<?, ?> values) {
+            BigDecimal mapSize = mapToBigDecimal(values.size());
+            return mapSize.compareTo(value()) >= 0;
+        }
         return false;
     }
 

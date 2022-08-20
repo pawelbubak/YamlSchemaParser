@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import static org.yaml.schema.parser.internal.schema.property.assertion.utils.MapperUtils.mapToBigDecimal;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.NUMBER)
-@SchemaPropertyName("min")
+@SchemaPropertyName("minimum")
 @SchemaVersion(SpecVersion.DRAFT_01)
 public class Minimum extends AbstractNumberAssertion {
 

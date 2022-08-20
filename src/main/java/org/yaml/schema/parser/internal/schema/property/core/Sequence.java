@@ -11,7 +11,7 @@ import org.yaml.schema.parser.api.serializer.Serializer;
 import java.io.IOException;
 
 @SchemaPropertyContext
-@SchemaPropertyName("seq")
+@SchemaPropertyName("sequence")
 @SchemaVersion(SpecVersion.DRAFT_01)
 public class Sequence extends AbstractDescriptionProperty<Integer> {
 

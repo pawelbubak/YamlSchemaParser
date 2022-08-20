@@ -17,7 +17,7 @@ import java.util.Map;
 import static org.yaml.schema.parser.internal.schema.property.assertion.utils.MapperUtils.mapToBigDecimal;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.NUMBER)
-@SchemaPropertyName("const")
+@SchemaPropertyName("constant")
 @SchemaVersion(SpecVersion.DRAFT_01)
 public class Constant extends AbstractNumberAssertion {
 
