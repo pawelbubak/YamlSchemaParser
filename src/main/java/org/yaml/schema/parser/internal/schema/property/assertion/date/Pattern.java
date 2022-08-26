@@ -6,14 +6,19 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyName;
 import org.yaml.schema.parser.api.schema.property.mapper.SchemaPropertyMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.validator.YamlValidator;
 import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
+import org.yaml.schema.parser.api.validator.problem.Message;
+import org.yaml.schema.parser.api.validator.problem.Problem;
 import org.yaml.schema.parser.internal.schema.property.assertion.AbstractStringAssertion;
+import org.yaml.schema.parser.internal.validator.problem.DefaultProblem;
 import org.yaml.schema.parser.internal.validator.problem.ValidationMessage;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @SchemaPropertyContext(SchemaPropertyContext.Type.DATE)
@@ -34,6 +39,17 @@ public class Pattern extends AbstractStringAssertion {
     }
 
     @Override
+    public void test(YamlValidator validator, Object value) {
+        if (!testValue(value)) {
+            Problem problem = DefaultProblem.builder()
+                                            .pointer(validator.getPointer())
+                                            .message(getProblemMessage(value))
+                                            .build();
+            validator.reportProblem(problem);
+        }
+    }
+
+    @Override
     public boolean testValue(Object value) {
         if (value instanceof Date) {
             return true;
@@ -47,6 +63,12 @@ public class Pattern extends AbstractStringAssertion {
             }
         }
         return false;
+    }
+
+    protected Message getProblemMessage(Object value) {
+        Map<String, Object> arguments = new HashMap<>(getProblemMessageArguments());
+        arguments.put("value", String.valueOf(value));
+        return ValidationMessage.builder().bundleKey(getProblemMessageCode()).arguments(arguments).build();
     }
 
     @Override
