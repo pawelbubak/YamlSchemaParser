@@ -57,7 +57,7 @@ public class Required extends AbstractBooleanAssertion {
 
     @Override
     public boolean testValue(Object value) {
-        return value != null;
+        return !value() || value != null;
     }
 
     @Override

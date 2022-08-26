@@ -9,8 +9,10 @@ import org.yaml.schema.parser.api.schema.version.SpecVersion;
 import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.api.validator.problem.AbstractMessage;
 import org.yaml.schema.parser.internal.schema.property.AbstractSchemaSimpleProperty;
+import org.yaml.schema.parser.internal.validator.problem.ValidationMessage;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,12 +48,13 @@ public class Enum extends AbstractSchemaSimpleProperty<List<String>> {
 
     @Override
     protected AbstractMessage.Key getProblemMessageCode() {
-        return null;
+        return ValidationMessage.Key.ENUM_VALIDATION_PROBLEM;
     }
 
     @Override
     protected Map<String, Object> getProblemMessageArguments() {
-        return null;
+        String expectedValues = String.join(",", value());
+        return Collections.singletonMap("expected", expectedValues);
     }
 
 }
