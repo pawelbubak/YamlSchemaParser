@@ -57,6 +57,15 @@ public class ItemsType extends AbstractSchemaPropertyAssertion {
     }
 
     @Override
+    public void format(Serializer serializer, Object value) throws IOException {
+        if (value != null) {
+            serializer.startArrayElement();
+            value().format(serializer, value);
+            serializer.endArrayElement();
+        }
+    }
+
+    @Override
     public boolean testValue(Object rawValue) {
         return true;
     }

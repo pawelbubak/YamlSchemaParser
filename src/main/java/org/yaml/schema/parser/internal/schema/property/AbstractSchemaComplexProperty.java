@@ -70,7 +70,7 @@ public abstract class AbstractSchemaComplexProperty extends AbstractSchemaProper
 
     @Override
     public void serialize(Serializer serializer) throws IOException {
-        serializer.startComplexProperty(name());
+        serializer.startComplexElement(name());
         serializeProperties(serializer);
         serializer.endComplexElement();
     }
@@ -83,6 +83,24 @@ public abstract class AbstractSchemaComplexProperty extends AbstractSchemaProper
                 Object propertyValue = ((Map<?, ?>) value).get(property.name());
                 property.test(validator, propertyValue);
                 validator.endElement();
+            }
+        }
+    }
+
+    @Override
+    public void format(Serializer serializer, Object rawValue) throws IOException {
+        if (rawValue instanceof Map<?, ?> values) {
+            serializer.startComplexElement(name());
+            formatMapProperties(serializer, values);
+            serializer.endComplexElement();
+        }
+    }
+
+    private void formatMapProperties(Serializer serializer, Map<?, ?> values) throws IOException {
+        for (Map.Entry<?, ?> valueEntry : values.entrySet()) {
+            SchemaProperty schemaProperty = getProperty(String.valueOf(valueEntry.getKey()));
+            if (schemaProperty != null) {
+                schemaProperty.format(serializer, valueEntry.getValue());
             }
         }
     }

@@ -44,13 +44,17 @@ public abstract class AbstractSchemaSimpleProperty<T> extends AbstractSchemaProp
     @Override
     public void test(YamlValidator validator, Object value) {
         if (!testValue(value)) {
-            Problem problem =
-                    DefaultProblem.builder()
-                                  .pointer(validator.getPointer())
-                                  .message(getProblemMessage())
-                                  .build();
+            Problem problem = DefaultProblem.builder()
+                                            .pointer(validator.getPointer())
+                                            .message(getProblemMessage())
+                                            .build();
             validator.reportProblem(problem);
         }
+    }
+
+    @Override
+    public void format(Serializer serializer, Object value) throws IOException {
+        // DO NOTHING
     }
 
     protected Message getProblemMessage() {

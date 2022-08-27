@@ -13,24 +13,35 @@ import org.yaml.schema.parser.api.serializer.configuration.SerializationConfigur
 public class SerializationContextImpl implements SerializationContext {
     @Builder.Default
     private int depth = -1;
+    @Builder.Default
+    private Context context = Context.NONE;
     private SerializationConfiguration configuration;
+    private boolean firstArrayElement;
+
+    @Override
+    public Context getContext() {
+        return context;
+    }
+
+    @Override
+    public void setContext(Context context) {
+        this.context = context;
+    }
 
     @Override
     public String getIndentation() {
-        return configuration.getIndentationType().getValue().repeat(configuration.getIndentationSize()).repeat(depth);
-    }
-
-    @Override
-    public SerializationContext getArraySerializationContext() {
-        return SerializationContextImpl.builder()
-                .configuration(configuration)
-                .depth(configuration.indentArrayItems() ? depth + 1 : depth)
-                .build();
-    }
-
-    @Override
-    public SerializationContext getObjectSerializationContext() {
-        return SerializationContextImpl.builder().configuration(configuration).depth(depth).build();
+        if (firstArrayElement) {
+            firstArrayElement = false;
+            return configuration.getIndentationType()
+                                .getValue()
+                                .repeat(configuration.getIndentationSize())
+                                .substring(1);
+        } else {
+            return configuration.getIndentationType()
+                                .getValue()
+                                .repeat(configuration.getIndentationSize())
+                                .repeat(depth);
+        }
     }
 
     @Override
@@ -39,8 +50,19 @@ public class SerializationContextImpl implements SerializationContext {
     }
 
     @Override
+    public void startArrayElement() {
+        firstArrayElement = true;
+    }
+
+    @Override
     public void endElement() {
         depth--;
+        context = Context.NONE;
+    }
+
+    @Override
+    public void endArrayElement() {
+        firstArrayElement = false;
     }
 
 }

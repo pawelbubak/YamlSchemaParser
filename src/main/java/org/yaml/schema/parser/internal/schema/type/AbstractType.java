@@ -27,7 +27,7 @@ public abstract class AbstractType extends AbstractSchemaComplexProperty {
         }
     }
 
-    private boolean isRequired() {
+    protected boolean isRequired() {
         try {
             String propertyName = SchemaPropertyNameDesignator.designatePropertyName(Required.class,
                     getUsedSpecVersion());

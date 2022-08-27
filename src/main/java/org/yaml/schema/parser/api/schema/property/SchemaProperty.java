@@ -1,12 +1,9 @@
 package org.yaml.schema.parser.api.schema.property;
 
-import org.yaml.schema.parser.api.schema.Schema;
 import org.yaml.schema.parser.api.serializer.Serializer;
 import org.yaml.schema.parser.api.validator.YamlValidator;
-import org.yaml.schema.parser.api.validator.problem.ProblemHandler;
 
 import java.io.IOException;
-import java.util.stream.Stream;
 
 public interface SchemaProperty {
 
@@ -20,30 +17,14 @@ public interface SchemaProperty {
     /**
      * Returns the sequence number of this property. Used for the schema serialization.
      *
-     * @return the sequence number of this property, never be {@code Integer.MAX_VALUE}.
+     * @return the sequence number of this property, never be {@code null}.
      */
     int sequenceNumber();
 
     void serialize(Serializer serializer) throws IOException;
 
-    /**
-     * Checks whether this property has any subschemas or not.
-     *
-     * @return {@code true} if this property contains any subschemas, {@code false} otherwise.
-     */
-    default boolean hasSubschemas() {
-        return false;
-    }
-
-    /**
-     * Returns all the subschemas owned by this property.
-     *
-     * @return the stream of subschemas owned by this property.
-     */
-    default Stream<Schema> getSubschemas() {
-        return Stream.empty();
-    }
-
     void test(YamlValidator validator, Object value);
+
+    void format(Serializer serializer, Object value) throws IOException;
 
 }

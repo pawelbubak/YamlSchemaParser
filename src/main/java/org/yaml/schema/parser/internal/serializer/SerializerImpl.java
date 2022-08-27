@@ -38,22 +38,77 @@ public class SerializerImpl implements Serializer {
     }
 
     @Override
-    public void startSimpleElement(String propertyName) throws IOException {
-        serializationContext.startElement();
-        outputStream.write(serializationContext.getIndentation().getBytes(serializationConfiguration.getCharset()));
-        outputStream.write(propertyName.getBytes(serializationConfiguration.getCharset()));
-        outputStream.write(SerializationConfiguration.COLON.getBytes(serializationConfiguration.getCharset()));
+    public void setContext(SerializationContext.Context context) {
+        serializationContext.setContext(context);
     }
 
     @Override
-    public void startComplexProperty(String propertyName) throws IOException {
+    public void startArrayElement() throws IOException {
         serializationContext.startElement();
         outputStream.write(serializationContext.getIndentation().getBytes(serializationConfiguration.getCharset()));
-        outputStream.write(propertyName.getBytes(serializationConfiguration.getCharset()));
-        outputStream.write(SerializationConfiguration.COLON.getBytes(serializationConfiguration.getCharset()));
-        outputStream.write(
-                SerializationConfiguration.LINE_TERMINATION.getBytes(serializationConfiguration.getCharset()));
+        outputStream.write(SerializationConfiguration.DASH.getBytes(serializationConfiguration.getCharset()));
+        serializationContext.startArrayElement();
+        serializationContext.setContext(SerializationContext.Context.ARRAY_ELEMENT);
     }
+
+    @Override
+    public void startComplexElement(Object rawPropertyName) throws IOException {
+        String propertyName = getStringValue(rawPropertyName);
+        startComplexElement(propertyName);
+    }
+
+    @Override
+    public void startComplexElement(String propertyName) throws IOException {
+        if (SerializationContext.Context.ARRAY_ELEMENT.equals(serializationContext.getContext())) {
+            serializationContext.setContext(SerializationContext.Context.NONE);
+        } else if (SerializationContext.Context.MAP_ELEMENT.equals(serializationContext.getContext())) {
+            serializationContext.setContext(SerializationContext.Context.NONE);
+        } else {
+            serializationContext.startElement();
+            outputStream.write(serializationContext.getIndentation().getBytes(serializationConfiguration.getCharset()));
+            outputStream.write(propertyName.getBytes(serializationConfiguration.getCharset()));
+            outputStream.write(SerializationConfiguration.COLON.getBytes(serializationConfiguration.getCharset()));
+            outputStream.write(
+                    SerializationConfiguration.LINE_TERMINATION.getBytes(serializationConfiguration.getCharset()));
+        }
+    }
+
+    @Override
+    public void startComplexMapElement(Object rawPropertyName) throws IOException {
+        startComplexElement(rawPropertyName);
+        serializationContext.setContext(SerializationContext.Context.MAP_ELEMENT);
+    }
+
+    @Override
+    public void startSimpleElement(Object rawPropertyName) throws IOException {
+        String propertyName = getStringValue(rawPropertyName);
+        startSimpleElement(propertyName);
+    }
+
+    @Override
+    public void startSimpleElement(String propertyName) throws IOException {
+        if (SerializationContext.Context.NONE.equals(serializationContext.getContext())) {
+            serializationContext.startElement();
+            outputStream.write(serializationContext.getIndentation().getBytes(serializationConfiguration.getCharset()));
+            outputStream.write(propertyName.getBytes(serializationConfiguration.getCharset()));
+            outputStream.write(SerializationConfiguration.COLON.getBytes(serializationConfiguration.getCharset()));
+        } else if (SerializationContext.Context.MAP_ELEMENT.equals(serializationContext.getContext())) {
+            serializationContext.startElement();
+        }
+    }
+
+    @Override
+    public void startSimpleMapElement(Object rawPropertyName) throws IOException {
+        startSimpleElement(rawPropertyName);
+        serializationContext.setContext(SerializationContext.Context.MAP_ELEMENT);
+    }
+
+    @Override
+    public void writeEmptyObject() throws IOException {
+        outputStream.write(SerializationConfiguration.SPACE.getBytes(serializationConfiguration.getCharset()));
+        outputStream.write("{}".getBytes(serializationConfiguration.getCharset()));
+    }
+
 
     @Override
     public void writePropertyValue(BigDecimal value) throws IOException {
@@ -104,9 +159,31 @@ public class SerializerImpl implements Serializer {
     }
 
     @Override
+    public void writePropertyValue(Number value) throws IOException {
+        BigDecimal testValue = BigDecimal.valueOf(value.doubleValue());
+        boolean isInteger =
+                testValue.signum() == 0 || testValue.scale() <= 0 || testValue.stripTrailingZeros().scale() <= 0;
+        NumberFormat formatter = isInteger
+                ? serializationConfiguration.getIntegerFormatter()
+                : serializationConfiguration.getDecimalFormatter();
+        outputStream.write(SerializationConfiguration.SPACE.getBytes(serializationConfiguration.getCharset()));
+        outputStream.write(formatter.format(value).getBytes(serializationConfiguration.getCharset()));
+    }
+
+    @Override
     public void writePropertyValue(String value) throws IOException {
         outputStream.write(SerializationConfiguration.SPACE.getBytes(serializationConfiguration.getCharset()));
+        boolean writeQuotationMarks = !value.isEmpty() &&
+                (!Character.isLetterOrDigit(value.charAt(0)) || value.chars().allMatch(Character::isDigit));
+        if (writeQuotationMarks) {
+            outputStream.write(
+                    SerializationConfiguration.QUOTATION_MARK.getBytes(serializationConfiguration.getCharset()));
+        }
         outputStream.write(value.getBytes(serializationConfiguration.getCharset()));
+        if (writeQuotationMarks) {
+            outputStream.write(
+                    SerializationConfiguration.QUOTATION_MARK.getBytes(serializationConfiguration.getCharset()));
+        }
     }
 
     @Override
@@ -138,8 +215,17 @@ public class SerializerImpl implements Serializer {
     }
 
     @Override
+    public void endArrayElement() {
+        serializationContext.endArrayElement();
+    }
+
+    @Override
     public void endComplexElement() {
         serializationContext.endElement();
+    }
+
+    @Override
+    public void endComplexMapElement() {
     }
 
     @Override
@@ -147,6 +233,31 @@ public class SerializerImpl implements Serializer {
         serializationContext.endElement();
         outputStream.write(
                 SerializationConfiguration.LINE_TERMINATION.getBytes(serializationConfiguration.getCharset()));
+    }
+
+    @Override
+    public void endSimpleMapElement() {
+        serializationContext.endElement();
+    }
+
+    private String getStringValue(Object rawPropertyName) {
+        if (rawPropertyName instanceof Boolean propertyName) {
+            return String.valueOf(propertyName);
+        } else if (rawPropertyName instanceof Date propertyName) {
+            return serializationConfiguration.getDateFormatter().format(propertyName);
+        } else if (rawPropertyName instanceof Number propertyName) {
+            BigDecimal testValue = BigDecimal.valueOf(propertyName.doubleValue());
+            boolean isInteger =
+                    testValue.signum() == 0 || testValue.scale() <= 0 || testValue.stripTrailingZeros().scale() <= 0;
+            NumberFormat formatter = isInteger
+                    ? serializationConfiguration.getIntegerFormatter()
+                    : serializationConfiguration.getDecimalFormatter();
+            return formatter.format(propertyName);
+        } else if (rawPropertyName instanceof String propertyName) {
+            return propertyName;
+        } else {
+            return String.valueOf(rawPropertyName);
+        }
     }
 
 }

@@ -6,7 +6,9 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.type.annotation.SchemaTypeName;
 import org.yaml.schema.parser.api.schema.type.mapper.SchemaTypeMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.serializer.Serializer;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +34,18 @@ public class NumberType extends AbstractType {
             }
             return new NumberType(specVersion, name, properties);
         };
+    }
+
+    @Override
+    public void format(Serializer serializer, Object rawValue) throws IOException {
+        if (rawValue == null && isRequired()) {
+            serializer.startSimpleElement(name());
+            serializer.endSimpleElement();
+        } else if (rawValue instanceof Number value) {
+            serializer.startSimpleElement(name());
+            serializer.writePropertyValue(value);
+            serializer.endSimpleElement();
+        }
     }
 
 }

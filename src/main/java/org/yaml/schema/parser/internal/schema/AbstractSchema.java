@@ -110,8 +110,14 @@ public abstract class AbstractSchema extends AbstractMap<String, SchemaProperty>
         properties().test(validator, yaml);
     }
 
+    @Override
     public void test(YamlValidator validator, Object yaml) {
         properties().test(validator, yaml);
+    }
+
+    @Override
+    public void format(Serializer serializer, Object yaml) throws IOException {
+        properties().format(serializer, yaml);
     }
 
     protected boolean containsProperty(String propertyName) {

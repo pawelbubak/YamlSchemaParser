@@ -5,6 +5,7 @@ import org.yaml.schema.parser.api.validator.YamlValidator;
 import org.yaml.schema.parser.api.validator.problem.ProblemHandler;
 import org.yaml.schema.parser.internal.schema.property.core.Definitions;
 import org.yaml.schema.parser.internal.schema.property.core.Properties;
+import org.yaml.schema.parser.internal.serializer.SerializerImpl;
 
 import java.io.IOException;
 
@@ -41,5 +42,7 @@ public interface Schema {
     void test(ProblemHandler problemHandler, Object yaml);
 
     void test(YamlValidator validator, Object yaml);
+
+    void format(Serializer serializer, Object yaml) throws IOException;
 
 }

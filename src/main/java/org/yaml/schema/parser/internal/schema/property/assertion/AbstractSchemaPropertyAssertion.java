@@ -19,7 +19,7 @@ public abstract class AbstractSchemaPropertyAssertion extends AbstractSchemaSimp
 
     @Override
     public void serialize(Serializer serializer) throws IOException {
-        serializer.startComplexProperty(name());
+        serializer.startComplexElement(name());
         serializeValue(serializer);
         serializer.endComplexElement();
     }

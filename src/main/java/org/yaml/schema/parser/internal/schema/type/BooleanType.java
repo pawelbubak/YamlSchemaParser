@@ -6,7 +6,9 @@ import org.yaml.schema.parser.api.schema.property.annotation.SchemaPropertyConte
 import org.yaml.schema.parser.api.schema.type.annotation.SchemaTypeName;
 import org.yaml.schema.parser.api.schema.type.mapper.SchemaTypeMapper;
 import org.yaml.schema.parser.api.schema.version.SpecVersion;
+import org.yaml.schema.parser.api.serializer.Serializer;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +34,25 @@ public class BooleanType extends AbstractType {
             }
             return new BooleanType(specVersion, name, properties);
         };
+    }
+
+    @Override
+    public void format(Serializer serializer, Object rawValue) throws IOException {
+        if (rawValue == null && isRequired()) {
+            serializer.startSimpleElement(name());
+            serializer.writePropertyValue(false);
+            serializer.endSimpleElement();
+        } else if (rawValue != null) {
+            if (rawValue instanceof Boolean value) {
+                serializer.startSimpleElement(name());
+                serializer.writePropertyValue(value);
+                serializer.endSimpleElement();
+            } else if (rawValue instanceof String value) {
+                serializer.startSimpleElement(name());
+                serializer.writePropertyValue(Boolean.valueOf(value));
+                serializer.endSimpleElement();
+            }
+        }
     }
 
 }
