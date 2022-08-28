@@ -13,10 +13,12 @@ import org.yaml.schema.parser.internal.schema.property.core.Definitions;
 import org.yaml.schema.parser.internal.schema.property.core.Properties;
 import org.yaml.schema.parser.internal.schema.property.core.annotation.Description;
 import org.yaml.schema.parser.internal.schema.property.core.annotation.Title;
+import org.yaml.schema.parser.internal.serializer.SerializerImpl;
 import org.yaml.schema.parser.internal.utils.SchemaPropertyNameDesignator;
 import org.yaml.schema.parser.internal.validator.DefaultYamlValidator;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 
 import static org.yaml.schema.parser.internal.schema.validation.SchemaPropertyValidationUtils.requireNonNull;
@@ -113,6 +115,11 @@ public abstract class AbstractSchema extends AbstractMap<String, SchemaProperty>
     @Override
     public void test(YamlValidator validator, Object yaml) {
         properties().test(validator, yaml);
+    }
+
+    @Override
+    public void format(OutputStream outputStream, Object yaml) throws IOException {
+        format(new SerializerImpl(outputStream), yaml);
     }
 
     @Override

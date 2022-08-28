@@ -10,8 +10,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static org.yaml.schema.parser.internal.schema.property.assertion.utils.MapperUtils.mapToBigDecimal;
@@ -173,8 +175,8 @@ public class SerializerImpl implements Serializer {
     @Override
     public void writePropertyValue(String value) throws IOException {
         outputStream.write(SerializationConfiguration.SPACE.getBytes(serializationConfiguration.getCharset()));
-        boolean writeQuotationMarks = !value.isEmpty() &&
-                (!Character.isLetterOrDigit(value.charAt(0)) || value.chars().allMatch(Character::isDigit));
+        boolean writeQuotationMarks =
+                !value.isEmpty() && (!Character.isLetterOrDigit(value.charAt(0)) || isNumeric(value));
         if (writeQuotationMarks) {
             outputStream.write(
                     SerializationConfiguration.QUOTATION_MARK.getBytes(serializationConfiguration.getCharset()));
@@ -258,6 +260,12 @@ public class SerializerImpl implements Serializer {
         } else {
             return String.valueOf(rawPropertyName);
         }
+    }
+
+    public boolean isNumeric(String str) {
+        ParsePosition pos = new ParsePosition(0);
+        serializationConfiguration.getDecimalFormatter().parse(str, pos);
+        return str.length() == pos.getIndex();
     }
 
 }
