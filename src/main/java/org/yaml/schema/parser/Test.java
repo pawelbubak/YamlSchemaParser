@@ -25,12 +25,12 @@ public class Test {
         // String rawYaml = getWorkersYaml();
         // String rawSchema = getKubernetesDeploymentSchema();
         // String rawYaml = getKubernetesDeploymentYaml();
-        // String rawSchema = getDockerComposeSchema();
-        // String rawYaml = getDockerComposeYaml();
+        String rawSchema = getDockerComposeSchema();
+        String rawYaml = getDockerComposeYaml();
         // String rawSchema = getPrometheusConfigurationSchema();
         // String rawYaml = getPrometheusConfigurationYaml();
-        String rawSchema = getSpringConfigurationSchema();
-        String rawYaml = getSpringConfigurationYaml();
+        // String rawSchema = getSpringConfigurationSchema();
+        // String rawYaml = getSpringConfigurationYaml();
         Object yaml = getYaml(rawYaml);
         try (InputStream inputStream = new ByteArrayInputStream(rawSchema.getBytes(StandardCharsets.UTF_8));
              YamlSchemaReader schemaReader = YamlSchemaReader.createDefaultReader(inputStream)) {
@@ -38,6 +38,9 @@ public class Test {
             ProblemHandler problemHandler = ProblemHandlerProvider.provider()
                                                                   .createCollectProblemHandler(System.out::println);
             schema.test(problemHandler, yaml);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            schema.format(byteArrayOutputStream, yaml);
+            System.out.println(byteArrayOutputStream.toString(StandardCharsets.UTF_8));
 //            serializeYamlSchema(schema);
         }
     }
@@ -156,6 +159,7 @@ public class Test {
                       zatrudniony:
                         type: date
                         sequence: 5
+                        pattern: yyyy-MM-dd
                       placaPodstawowa:
                         type: number
                         sequence: 6
@@ -197,7 +201,6 @@ public class Test {
                     itemsKey:
                       type: number
                     itemsType: *zespol
-                                
                 """;
     }
 
@@ -354,8 +357,10 @@ public class Test {
                     properties:
                       name:
                         type: string
+                        sequence: 1
                       valueFrom:
                         type: object
+                        sequence: 2
                         properties:
                           secretKeyRef:
                             type: object
@@ -367,19 +372,24 @@ public class Test {
                   volumeMount: &volumeMount
                     type: object
                     properties:
-                      mountPath:
-                        type: string
                       name:
                         type: string
+                        sequence: 1
+                      mountPath:
+                        type: string
+                        sequence: 2
                   container: &container
                     type: object
                     properties:
                       name:
                         type: string
+                        sequence: 1
                       image:
                         type: string
+                        sequence: 2
                       imagePullPolicy:
                         type: string
+                        sequence: 3
                         enum: ['Always', 'IfNotPresent', 'Never']
                       ports:
                         type: array
@@ -395,8 +405,10 @@ public class Test {
                     properties:
                       name:
                         type: string
+                        sequence: 1
                       persistentVolumeClaim:
                         type: object
+                        sequence: 2
                         properties:
                           claimName:
                             type: string
@@ -505,6 +517,7 @@ public class Test {
                     properties:
                       image:
                         type: string
+                        sequence: 1
                       ports:
                         type: array
                         itemsType:
@@ -546,10 +559,12 @@ public class Test {
                   version:
                     type: string
                     required: true
+                    sequence: 1
                     pattern: "[0-9]*[.][0-9]*"
                   services:
                     type: map
                     required: true
+                    sequence: 2
                     itemsKey:
                       type: string
                     itemsType: *container
@@ -631,7 +646,7 @@ public class Test {
                                 
                 networks:
                   front-tier: {}
-                  back-tier: {}
+                  back-tier:
                 """;
     }
 
@@ -747,9 +762,11 @@ public class Test {
                       id:
                         type: string
                         required: true
+                        sequence: 1
                       uri:
                         type: string
                         required: true
+                        sequence: 2
                       predicates:
                         type: array
                         itemsType:
