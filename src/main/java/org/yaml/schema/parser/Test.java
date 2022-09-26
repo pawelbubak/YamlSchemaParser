@@ -21,12 +21,14 @@ public class Test {
     }
 
     private static void test() throws Exception {
+         String rawSchema = getExampleSchema();
+         String rawYaml = getExampleDocument();
         // String rawSchema = getWorkersSchema();
         // String rawYaml = getWorkersYaml();
         // String rawSchema = getKubernetesDeploymentSchema();
         // String rawYaml = getKubernetesDeploymentYaml();
-        String rawSchema = getDockerComposeSchema();
-        String rawYaml = getDockerComposeYaml();
+        // String rawSchema = getDockerComposeSchema();
+        // String rawYaml = getDockerComposeYaml();
         // String rawSchema = getPrometheusConfigurationSchema();
         // String rawYaml = getPrometheusConfigurationYaml();
         // String rawSchema = getSpringConfigurationSchema();
@@ -898,6 +900,53 @@ public class Test {
                         url: /v3/api-docs/department
                       - name: organization
                         url: /v3/api-docs/organization
+                """;
+    }
+
+    private static String getExampleDocument() {
+        return """
+                id: ID
+                etat: NIEZNANY
+                id-szefa:
+                zatrudniony: 1968/01/01
+                placa-podstawowa: 0
+                placa-dodatkowa: -1
+                id-zespolu: 10
+                """;
+    }
+    private static String getExampleSchema() {
+        return """
+                $schema:
+                  id: 'https://example.com/schemas/pracownik.yaml'
+                  version: '1.0'
+                properties:
+                  id:
+                    type: integer
+                    required: true
+                    sequence: 1
+                  nazwisko:
+                    type: string
+                    required: true
+                    sequence: 2
+                  etat:
+                    type: string
+                    required: true
+                    sequence: 3
+                    enum: [ADIUNKT,ASYSTENT,DYREKTOR,PROFESOR]
+                  id-szefa:
+                    type: integer
+                  zatrudniony:
+                    type: date
+                    pattern: yyyy-MM-dd
+                  placa-podstawowa:
+                    type: number
+                    exclusiveMinimum: 0
+                  placa-dodatkowa:
+                    type: number
+                    minimum: 0
+                  id-zespolu:
+                    type: integer
+                    required: true
                 """;
     }
 
